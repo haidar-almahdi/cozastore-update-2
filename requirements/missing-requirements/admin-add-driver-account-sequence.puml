@@ -1,0 +1,12 @@
+@startuml
+actor Admin
+participant "Admin Users UI" as UI
+participant "Admin DriverController" as C
+database DB
+
+Admin -> UI: إدخال بيانات سائق
+UI -> C: POST /admin/drivers
+C -> DB: create user(role=driver)
+DB --> C: success
+C --> UI: redirect with success
+@enduml

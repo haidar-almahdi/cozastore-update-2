@@ -1,0 +1,27 @@
+@startuml Update Cart Item - Sequence Diagram
+
+actor Customer
+participant "CartController" as CartCtrl
+participant "CartItem" as CartItem
+participant "Product" as Product
+participant "View" as View
+
+== Update Cart Item ==
+Customer -> CartCtrl: update(request, item)
+CartCtrl -> CartCtrl: validate(request)
+CartCtrl -> Product: find(item->product_id)
+Product --> CartCtrl: product
+CartCtrl -> Product: checkStock(quantity)
+Product --> CartCtrl: available
+
+alt Stock insufficient
+    CartCtrl -> View: redirect with error
+    View --> Customer: show "Insufficient stock"
+else Stock available
+    CartCtrl -> CartItem: update(quantity)
+    CartItem --> CartCtrl: updated
+    CartCtrl -> View: redirect with success
+    View --> Customer: show "Cart updated"
+end
+
+@enduml

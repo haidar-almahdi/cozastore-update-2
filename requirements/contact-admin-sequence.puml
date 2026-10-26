@@ -1,0 +1,27 @@
+@startuml Contact Admin - Sequence Diagram
+
+actor User
+participant "ContactController" as ContactCtrl
+participant "ContactMessage" as Message
+participant "View" as View
+
+== Show Contact Form ==
+User -> ContactCtrl: index()
+ContactCtrl -> View: show contact
+View --> User: display contact form
+
+== Send Message ==
+User -> ContactCtrl: store(request)
+ContactCtrl -> ContactCtrl: validate(request)
+
+alt Validation fails
+    ContactCtrl -> View: redirect with errors
+    View --> User: show validation errors
+else Validation passes
+    ContactCtrl -> Message: create()
+    Message --> ContactCtrl: message_created
+    ContactCtrl -> View: redirect with success
+    View --> User: show "Message sent successfully"
+end
+
+@enduml

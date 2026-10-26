@@ -1,0 +1,34 @@
+@startuml Add Category - Sequence Diagram
+
+actor Admin
+participant "CategoryController" as CatCtrl
+participant "Category" as Category
+participant "FileUpload" as Upload
+participant "View" as View
+
+== Show Create Form ==
+Admin -> CatCtrl: create()
+CatCtrl -> View: show admin.categories.create()
+View --> Admin: display create form
+
+== Store Category ==
+Admin -> CatCtrl: store(request)
+CatCtrl -> CatCtrl: validate(request)
+CatCtrl -> Category: where('name', name)->exists()
+Category --> CatCtrl: exists_check
+alt Name already exists
+  CatCtrl -> View: return error
+  View --> Admin: "Name already exists"
+else Name is unique
+  CatCtrl -> CatCtrl: generateSlug(name)
+  alt Image uploaded
+    CatCtrl -> Upload: store(image)
+    Upload --> CatCtrl: image_path
+  end
+  CatCtrl -> Category: create(data)
+  Category --> CatCtrl: category_created
+  CatCtrl -> View: redirect categories.index()
+  View --> Admin: show success message
+end
+
+@enduml

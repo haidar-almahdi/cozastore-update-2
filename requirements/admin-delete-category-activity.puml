@@ -1,0 +1,25 @@
+@startuml
+title حذف فئة (Delete Category)
+|Admin|
+start
+:النقر على زر "حذف" لفئة محددة;
+:تأكيد الحذف;
+
+|Controller (CategoryController)|
+:استقبال طلب DELETE /admin/categories/{id};
+:جلب الفئة (Category::find($id));
+if (هل للفئة صورة؟) then (نعم)
+    :تحديد مسار الصورة;
+    :حذف ملف الصورة من الخادم (unlink);
+else (لا)
+endif
+:حذف الفئة من قاعدة البيانات ($category->delete());
+:إعادة التوجيه إلى 'admin.categories.index';
+:عرض رسالة نجاح;
+
+|View (admin.categories.index)|
+:تحديث القائمة (اختفاء الفئة المحذوفة);
+
+|Admin|
+stop
+@enduml

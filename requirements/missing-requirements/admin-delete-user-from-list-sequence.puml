@@ -1,0 +1,12 @@
+@startuml
+actor Admin
+participant UI
+participant "Admin UserController" as C
+database DB
+
+Admin -> UI: delete user
+UI -> C: DELETE /admin/users/{id}
+C -> DB: delete user
+DB --> C: success
+C --> UI: redirect with success
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+start
+:Open Quick Offers table;
+:Edit percentage or schedule in one row;
+:Click Save in same row;
+:Submit row form by form attribute;
+if (Validation passed?) then (Yes)
+  :Persist product quick offer;
+  :Show success;
+else (No)
+  :Show errors;
+endif
+stop
+@enduml

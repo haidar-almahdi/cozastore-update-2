@@ -1,0 +1,14 @@
+@startuml Use Case High Level - Driver
+left to right direction
+actor Driver
+
+rectangle "Driver Portal" {
+  usecase "Receive Delivery Tasks" as D1
+  usecase "Manage Active Deliveries" as D2
+  usecase "Complete Delivery" as D3
+}
+
+Driver --> D1
+Driver --> D2
+Driver --> D3
+@enduml

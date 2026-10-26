@@ -1,0 +1,25 @@
+@startuml Edit Profile - Sequence Diagram
+
+actor Customer
+participant "ProfileController" as ProfileCtrl
+participant "Auth" as Auth
+participant "User" as User
+participant "View" as View
+
+== Update Profile ==
+Customer -> ProfileCtrl: update(request)
+ProfileCtrl -> ProfileCtrl: validate(request)
+
+alt Validation fails
+    ProfileCtrl -> View: redirect with errors
+    View --> Customer: show validation errors
+else Validation passes
+    ProfileCtrl -> Auth: user()
+    Auth --> ProfileCtrl: current_user
+    ProfileCtrl -> User: update()
+    User --> ProfileCtrl: updated
+    ProfileCtrl -> View: redirect with success
+    View --> Customer: show "Profile updated"
+end
+
+@enduml

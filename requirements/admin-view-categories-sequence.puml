@@ -1,0 +1,50 @@
+@startuml
+actor "Admin" as Admin
+participant "View (Sidebar)" as Sidebar
+participant "Route (web.php)" as Route
+participant "Controller (CategoryController)" as Controller
+participant "Model (Category)" as CategoryModel
+participant "Model (Product)" as ProductModel
+participant "View (admin.categories.index)" as IndexView
+
+Admin -> Sidebar: النقر على "إدارة الفئات"
+Sidebar -> Route: GET /admin/categories
+Route -> Controller: index()
+
+activate Controller
+    Controller -> CategoryModel: with('products')->latest()->get()
+    activate CategoryModel
+        CategoryModel --> Controller: Collection<Category>
+    deactivate CategoryModel
+
+    Controller -> CategoryModel: count()
+    activate CategoryModel
+        CategoryModel --> Controller: totalCategories
+    deactivate CategoryModel
+
+    Controller -> ProductModel: count()
+    activate ProductModel
+        ProductModel --> Controller: totalProducts
+    deactivate ProductModel
+
+    Controller -> CategoryModel: where('is_active', true)->count()
+    activate CategoryModel
+        CategoryModel --> Controller: activeCategories
+    deactivate CategoryModel
+
+    Controller -> CategoryModel: where('is_active', false)->count()
+    activate CategoryModel
+        CategoryModel --> Controller: inactiveCategories
+    deactivate CategoryModel
+
+    Controller -> CategoryModel: withCount('products')->orderBy(...)->first()
+    activate CategoryModel
+        CategoryModel --> Controller: categoryWithMostProducts
+    deactivate CategoryModel
+
+    Controller -> IndexView: return view(data)
+    activate IndexView
+        IndexView --> Admin: عرض صفحة إدارة الفئات
+    deactivate IndexView
+deactivate Controller
+@enduml

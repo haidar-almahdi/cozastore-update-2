@@ -1,0 +1,37 @@
+@startuml Use Case Low Level - Customer
+left to right direction
+actor Customer
+actor Guest
+
+rectangle "Shop System" {
+  usecase "Register/Login/Logout" as C1
+  usecase "Browse/Search/Filter Products" as C2
+  usecase "View Product Details" as C3
+  usecase "Add/Update/Remove Cart Items" as C4
+  usecase "Checkout & Place Order" as C5
+  usecase "View/Cancel Orders" as C6
+  usecase "Add/Remove Favorites" as C7
+  usecase "Rate & Comment Product" as C8
+  usecase "Edit Profile" as C9
+  usecase "Contact Admin & View Replies" as C10
+  usecase "View Black Friday / Discounts" as C11
+}
+
+Guest --> C1
+Guest --> C2
+Guest --> C3
+
+Customer --> C2
+Customer --> C3
+Customer --> C4
+Customer --> C5
+Customer --> C6
+Customer --> C7
+Customer --> C8
+Customer --> C9
+Customer --> C10
+Customer --> C11
+
+C5 ..> C1 : <<include>>
+C7 ..> C1 : <<include>>
+@enduml

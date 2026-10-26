@@ -1,0 +1,44 @@
+@startuml Register - Sequence Diagram
+
+actor Guest
+participant "RegisterController" as RegCtrl
+participant "User" as User
+participant "Hash" as Hash
+participant "Auth" as Auth
+participant "View" as View
+
+== Show Register Form ==
+Guest -> RegCtrl: create()
+RegCtrl -> View: show register
+View --> Guest: display register form
+
+== Register ==
+Guest -> RegCtrl: store(request)
+RegCtrl -> RegCtrl: validate(request)
+
+alt Validation fails
+    RegCtrl -> View: redirect with errors
+    View --> Guest: show validation errors
+else Validation passes
+    RegCtrl -> User: where(email)->exists()
+    User --> RegCtrl: email_exists
+
+    alt Email exists
+        RegCtrl -> View: redirect with error
+        View --> Guest: show "Email already taken"
+    else Email available
+        RegCtrl -> Hash: make(password)
+        Hash --> RegCtrl: hashed_password
+
+        RegCtrl -> User: create()
+        User --> RegCtrl: user
+
+        RegCtrl -> Auth: login(user)
+        Auth --> RegCtrl: authenticated
+
+        RegCtrl -> View: redirect to home
+        View --> Guest: display home page
+    end
+end
+
+@enduml

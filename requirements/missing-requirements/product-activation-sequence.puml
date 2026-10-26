@@ -1,0 +1,17 @@
+@startuml
+actor Admin
+actor Customer
+participant "Admin UI" as AUI
+participant "Product Controller" as PC
+participant "Shop Product Controller" as SPC
+database DB
+
+Admin -> AUI: تعديل حالة المنتج
+AUI -> PC: PUT is_active=false
+PC -> DB: update product
+
+Customer -> SPC: فتح صفحة المنتجات
+SPC -> DB: select where is_active=true
+DB --> SPC: active products
+SPC --> Customer: عرض المنتجات
+@enduml

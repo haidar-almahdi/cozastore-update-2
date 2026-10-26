@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Multiple Images Upload</title>
+    <style>
+        .additional-image-item {
+            position: relative;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .additional-image-item img {
+            width: 150px;
+            height: 120px;
+            object-fit: cover;
+        }
+        .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Test Multiple Images Upload</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div>
+            <label>Upload Additional Images:</label>
+            <input type="file" name="additional_images[]" multiple accept="image/*" onchange="previewAdditionalImages(this)" id="additionalImagesInput">
+            <small>Hold Ctrl/Cmd to select multiple images (Max: 8 images)</small>
+        </div>
+
+        <div id="additional-images-preview" style="margin-top: 20px;"></div>
+
+        <div style="margin-top: 20px;">
+            <span id="imageCount">0/8 images</span>
+        </div>
+
+        <button type="submit" style="margin-top: 20px;">Submit</button>
+    </form>
+
+    <script>
+        // Additional images preview
+        function previewAdditionalImages(input) {
+            const preview = document.getElementById('additional-images-preview');
+            const counter = document.getElementById('imageCount');
+
+            preview.innerHTML = '';
+
+            if (input.files && input.files.length > 0) {
+                // Limit to 8 images
+                const files = Array.from(input.files).slice(0, 8);
+
+                // Update counter
+                counter.textContent = `${files.length}/8 images`;
+
+                files.forEach((file, index) => {
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert(`File ${file.name} is not a valid image.`);
+                        return;
+                    }
+
+                    // Validate file size (2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert(`File ${file.name} is too large. Maximum size is 2MB.`);
+                        return;
+                    }
+
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.className = 'additional-image-item';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" alt="Additional Image ${index + 1}">
+                            <button type="button" class="remove-image" onclick="removeImagePreview(this, ${index})">
+                                ×
+                            </button>
+                        `;
+                        preview.appendChild(div);
+                    }
+
+                    reader.readAsDataURL(file);
+                });
+
+                if (files.length >= 8) {
+                    alert('Maximum 8 additional images allowed.');
+                }
+            } else {
+                counter.textContent = '0/8 images';
+            }
+        }
+
+        // Remove image from preview
+        function removeImagePreview(button, index) {
+            const input = document.getElementById('additionalImagesInput');
+            const dt = new DataTransfer();
+
+            // Add all files except the one being removed
+            Array.from(input.files).forEach((file, i) => {
+                if (i !== index) {
+                    dt.items.add(file);
+                }
+            });
+
+            // Update input files
+            input.files = dt.files;
+
+            // Refresh preview
+            previewAdditionalImages(input);
+        }
+    </script>
+</body>
+</html>

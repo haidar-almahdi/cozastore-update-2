@@ -1,0 +1,25 @@
+@startuml Remove from Favorites - Sequence Diagram
+
+actor Customer
+participant "FavoriteController" as FavCtrl
+participant "Favorite" as Favorite
+participant "View" as View
+
+== Remove from Favorites ==
+Customer -> FavCtrl: destroy(product_id)
+FavCtrl -> FavCtrl: checkAuthentication()
+FavCtrl -> Favorite: where(user_id, product_id)->first()
+Favorite --> FavCtrl: favorite_record
+alt Favorite not found
+  FavCtrl -> View: return error message
+  View --> Customer: "Not in favorites"
+else Favorite found
+  FavCtrl -> Favorite: delete()
+  Favorite --> FavCtrl: deleted
+  FavCtrl -> Favorite: count(user_id)
+  Favorite --> FavCtrl: favorites_count
+  FavCtrl -> View: return success + count
+  View --> Customer: update UI + show success
+end
+
+@enduml

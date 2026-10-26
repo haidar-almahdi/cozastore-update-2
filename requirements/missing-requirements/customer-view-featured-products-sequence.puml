@@ -1,0 +1,10 @@
+@startuml
+actor Customer
+participant "Home Controller" as HC
+database DB
+
+Customer -> HC: GET /shop/home
+HC -> DB: query featured active products
+DB --> HC: featured list
+HC --> Customer: render featured section
+@enduml

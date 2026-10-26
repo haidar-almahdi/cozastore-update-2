@@ -1,0 +1,150 @@
+@startuml CozaStore Class Diagram (Project)
+!theme plain
+skinparam classAttributeIconSize 0
+
+class User {
+  +id: int
+  +name: string
+  +email: string
+  +role: string
+  +wallet_balance: decimal
+  +loyalty_points_balance: int
+}
+
+class Category {
+  +id: int
+  +name: string
+  +slug: string
+  +is_active: bool
+}
+
+class Product {
+  +id: int
+  +name: string
+  +slug: string
+  +price: decimal
+  +stock: int
+  +is_active: bool
+  +is_featured: bool
+  +discount_percentage: int
+  +discount_starts_at: datetime
+  +discount_ends_at: datetime
+  +black_friday_enabled: bool
+  +quick_offer_enabled: bool
+  +quick_offer_percentage: int
+  +quick_offer_starts_at: datetime
+  +quick_offer_ends_at: datetime
+  +current_price: decimal
+}
+
+class Cart {
+  +id: int
+  +user_id: int
+  +status: string
+}
+
+class CartItem {
+  +id: int
+  +cart_id: int
+  +product_id: int
+  +quantity: int
+  +price: decimal
+  +size: string
+  +color: string
+}
+
+class Order {
+  +id: int
+  +user_id: int
+  +driver_id: int
+  +order_number: string
+  +total_amount: decimal
+  +status: string
+}
+
+class OrderItem {
+  +id: int
+  +order_id: int
+  +product_id: int
+  +quantity: int
+  +price: decimal
+}
+
+class Favorite {
+  +id: int
+  +user_id: int
+  +product_id: int
+}
+
+class ProductComment {
+  +id: int
+  +user_id: int
+  +product_id: int
+  +content: text
+}
+
+class ProductRating {
+  +id: int
+  +user_id: int
+  +product_id: int
+  +stars: int
+}
+
+class ContactMessage {
+  +id: int
+  +user_id: int
+  +subject: string
+  +message: text
+}
+
+class MessageReply {
+  +id: int
+  +contact_message_id: int
+  +admin_user_id: int
+  +reply_message: text
+}
+
+class LoyaltyPointTransaction {
+  +id: int
+  +user_id: int
+  +points: int
+  +type: string
+}
+
+class SizeGuide {
+  +id: int
+  +name: string
+  +scope_type: string
+  +scope_id: int
+  +gender: string
+}
+
+class SiteSetting {
+  +id: int
+  +key: string
+  +value: text
+}
+
+User ||--o{ Order
+User ||--o{ Cart
+User ||--o{ Favorite
+User ||--o{ ProductComment
+User ||--o{ ProductRating
+User ||--o{ ContactMessage
+User ||--o{ LoyaltyPointTransaction
+
+Category ||--o{ Product
+Category ||--o{ SizeGuide
+
+Product ||--o{ CartItem
+Product ||--o{ OrderItem
+Product ||--o{ Favorite
+Product ||--o{ ProductComment
+Product ||--o{ ProductRating
+
+Cart ||--o{ CartItem
+Order ||--o{ OrderItem
+ContactMessage ||--o{ MessageReply
+User ||--o{ MessageReply : admin replies
+User ||--o{ Order : driver assignment
+@enduml

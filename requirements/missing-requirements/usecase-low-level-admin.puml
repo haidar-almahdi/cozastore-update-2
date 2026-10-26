@@ -1,0 +1,30 @@
+@startuml Use Case Low Level - Admin
+left to right direction
+actor Admin
+
+rectangle "Admin System" {
+  usecase "View Dashboard" as A1
+  usecase "View/Add/Edit/Delete Product" as A2
+  usecase "Manage Quick Offers" as A3
+  usecase "Manage Discount Settings" as A4
+  usecase "View/Add/Edit/Delete Category" as A5
+  usecase "View/Update Orders" as A6
+  usecase "Create Driver Account" as A7
+  usecase "View/Add/Edit/Delete Users" as A8
+  usecase "View/Reply/Filter Messages" as A9
+  usecase "View Loyalty Users" as A10
+  usecase "Manage Size Guides" as A11
+}
+
+Admin --> A1
+Admin --> A2
+Admin --> A3
+Admin --> A4
+Admin --> A5
+Admin --> A6
+Admin --> A7
+Admin --> A8
+Admin --> A9
+Admin --> A10
+Admin --> A11
+@enduml

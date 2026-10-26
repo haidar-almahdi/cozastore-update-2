@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تجاوز Laravel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #e9ecef;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 اختبار تجاوز Laravel</h1>
+        <p class="info">هذا الاختبار يتجاوز Laravel تماماً لفحص المشكلة الأساسية</p>
+
+        <div class="test-section">
+            <h2>1. اختبار الخادم الأساسي</h2>
+            <button onclick="testBasicServer()">اختبار الخادم</button>
+            <div id="serverResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. اختبار قاعدة البيانات المباشر</h2>
+            <button onclick="testDirectDB()">اختبار قاعدة البيانات</button>
+            <div id="dbResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. اختبار POST مباشر</h2>
+            <button onclick="testDirectPOST()">اختبار POST</button>
+            <div id="postResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. اختبار تحديث مباشر لقاعدة البيانات</h2>
+            <button onclick="testDirectUpdate()">اختبار التحديث المباشر</button>
+            <div id="updateResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>5. معلومات النظام</h2>
+            <button onclick="getSystemInfo()">معلومات النظام</button>
+            <div id="systemResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>6. الحلول المقترحة</h2>
+            <div class="info">
+                <h3>إذا كان التحديث لا يزال معلقاً:</h3>
+                <ol>
+                    <li><strong>أعد تشغيل الخادم:</strong> أوقف وشغل Apache/Nginx</li>
+                    <li><strong>تحقق من ملف .htaccess:</strong> تأكد من وجوده في مجلد public</li>
+                    <li><strong>فحص الصلاحيات:</strong> chmod -R 755 storage bootstrap/cache</li>
+                    <li><strong>فحص PHP:</strong> تأكد من أن PHP يعمل بشكل صحيح</li>
+                    <li><strong>فحص الذاكرة:</strong> قد تكون الذاكرة ممتلئة</li>
+                    <li><strong>فحص اللوغ:</strong> راجع error.log في Apache</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = content;
+            element.className = `result ${type}`;
+            element.style.display = 'block';
+        }
+
+        function testBasicServer() {
+            showResult('serverResult', 'جاري اختبار الخادم...', 'info');
+
+            fetch('direct_test.php')
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                })
+                .then(data => {
+                    if (data.includes('Laravel')) {
+                        showResult('serverResult', '✅ الخادم يعمل و Laravel متاح', 'success');
+                    } else {
+                        showResult('serverResult', '⚠️ الخادم يعمل لكن Laravel قد يكون به مشكلة', 'info');
+                    }
+                })
+                .catch(error => {
+                    showResult('serverResult', `❌ خطأ في الخادم: ${error.message}`, 'error');
+                });
+        }
+
+        function testDirectDB() {
+            showResult('dbResult', 'جاري اختبار قاعدة البيانات...', 'info');
+
+            fetch('simple_product_test.php')
+                .then(response => response.text())
+                .then(data => {
+                    if (data.includes('✅')) {
+                        showResult('dbResult', '✅ قاعدة البيانات تعمل بشكل صحيح', 'success');
+                    } else {
+                        showResult('dbResult', `❌ مشكلة في قاعدة البيانات: ${data.substring(0, 200)}...`, 'error');
+                    }
+                })
+                .catch(error => {
+                    showResult('dbResult', `❌ خطأ: ${error.message}`, 'error');
+                });
+        }
+
+        function testDirectPOST() {
+            showResult('postResult', 'جاري اختبار POST...', 'info');
+
+            const formData = new FormData();
+            formData.append('test_field', 'test_value');
+            formData.append('action', 'test_post');
+
+            fetch('direct_test.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data.includes('POST data received')) {
+                    showResult('postResult', '✅ POST يعمل بشكل صحيح', 'success');
+                } else {
+                    showResult('postResult', '⚠️ POST قد لا يعمل بشكل صحيح', 'info');
+                }
+            })
+            .catch(error => {
+                showResult('postResult', `❌ خطأ في POST: ${error.message}`, 'error');
+            });
+        }
+
+        function testDirectUpdate() {
+            showResult('updateResult', 'جاري اختبار التحديث المباشر...', 'info');
+
+            // This would test direct database update
+            fetch('simple_product_test.php')
+                .then(response => response.text())
+                .then(data => {
+                    if (data.includes('Update successful')) {
+                        showResult('updateResult', '✅ التحديث المباشر يعمل', 'success');
+                    } else if (data.includes('Database connected')) {
+                        showResult('updateResult', '⚠️ الاتصال يعمل لكن التحديث قد يكون به مشكلة', 'info');
+                    } else {
+                        showResult('updateResult', '❌ مشكلة في التحديث المباشر', 'error');
+                    }
+                })
+                .catch(error => {
+                    showResult('updateResult', `❌ خطأ: ${error.message}`, 'error');
+                });
+        }
+
+        function getSystemInfo() {
+            showResult('systemResult', 'جاري جمع معلومات النظام...', 'info');
+
+            let info = '<h4>معلومات المتصفح:</h4>';
+            info += `<p>User Agent: ${navigator.userAgent}</p>`;
+            info += `<p>Platform: ${navigator.platform}</p>`;
+            info += `<p>Language: ${navigator.language}</p>`;
+            info += `<p>Online: ${navigator.onLine ? 'Yes' : 'No'}</p>`;
+            info += `<p>Current URL: ${window.location.href}</p>`;
+            info += `<p>Referrer: ${document.referrer || 'None'}</p>`;
+
+            showResult('systemResult', info, 'info');
+        }
+
+        // Auto-run basic test
+        window.addEventListener('load', function() {
+            setTimeout(testBasicServer, 1000);
+        });
+    </script>
+</body>
+</html>

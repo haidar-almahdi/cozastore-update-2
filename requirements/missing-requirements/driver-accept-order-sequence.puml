@@ -1,0 +1,16 @@
+@startuml
+actor Driver
+participant "Driver Orders UI" as UI
+participant "Driver OrderController" as C
+database DB
+
+Driver -> UI: ضغط قبول
+UI -> C: POST /driver/orders/{id}/accept
+C -> DB: تحقق الحالة + التعيين
+DB --> C: success/fail
+alt success
+  C --> UI: success message
+else fail
+  C --> UI: error message
+end
+@enduml

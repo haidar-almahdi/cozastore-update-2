@@ -1,0 +1,33 @@
+@startuml Admin Add Product - Sequence Diagram
+
+actor Admin
+participant "ProductController" as ProductCtrl
+participant "Product" as Product
+participant "Storage" as Storage
+participant "Category" as Category
+participant "View" as View
+
+== Show Create Form ==
+Admin -> ProductCtrl: create()
+ProductCtrl -> Category: all()
+Category --> ProductCtrl: categories
+ProductCtrl -> View: show admin.products.create(categories)
+View --> Admin: display create form
+
+== Store Product ==
+Admin -> ProductCtrl: store(request)
+ProductCtrl -> ProductCtrl: validate(request)
+
+alt Validation fails
+    ProductCtrl -> View: redirect with errors
+    View --> Admin: show validation errors
+else Validation passes
+    ProductCtrl -> Storage: store(image)
+    Storage --> ProductCtrl: image_path
+    ProductCtrl -> Product: create()
+    Product --> ProductCtrl: product_created
+    ProductCtrl -> View: redirect to products.index
+    View --> Admin: show "Product added successfully"
+end
+
+@enduml

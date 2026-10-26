@@ -1,0 +1,15 @@
+@startuml Admin View Users - Sequence Diagram
+
+actor Admin
+participant "UserController" as UserCtrl
+participant "User" as User
+participant "View" as View
+
+== View Users ==
+Admin -> UserCtrl: index()
+UserCtrl -> User: all()
+User --> UserCtrl: users
+UserCtrl -> View: show admin.users.index(users)
+View --> Admin: display users list
+
+@enduml

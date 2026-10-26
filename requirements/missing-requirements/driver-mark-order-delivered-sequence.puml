@@ -1,0 +1,16 @@
+@startuml
+actor Driver
+participant "Driver Orders UI" as UI
+participant "Driver OrderController" as C
+participant "LoyaltyService" as LS
+database DB
+
+Driver -> UI: ضغط تم التوصيل
+UI -> C: POST /driver/orders/{id}/delivered
+C -> DB: تحقق التعيين + تحديث status=completed
+DB --> C: success
+C -> LS: awardDeliveredOrderPoints(user, order)
+LS -> DB: +3 points transaction
+LS --> C: done
+C --> UI: success message
+@enduml

@@ -1,0 +1,29 @@
+@startuml Reply to Message - Sequence Diagram
+
+actor Admin
+participant "ContactMessageController" as MsgCtrl
+participant "ContactMessage" as Message
+participant "MessageReply" as Reply
+participant "Notification" as Notif
+participant "View" as View
+
+== Show Message ==
+Admin -> MsgCtrl: show(message_id)
+MsgCtrl -> Message: with('replies')->find(message_id)
+Message --> MsgCtrl: message
+MsgCtrl -> View: show admin.messages.show(message)
+View --> Admin: display message details
+
+== Reply to Message ==
+Admin -> MsgCtrl: reply(request, message_id)
+MsgCtrl -> MsgCtrl: validate(request)
+MsgCtrl -> Reply: create(message_id, admin_id, reply_text)
+Reply --> MsgCtrl: reply_created
+MsgCtrl -> Message: update(is_read: true)
+Message --> MsgCtrl: updated
+MsgCtrl -> Notif: sendToUser(message->email)
+Notif --> MsgCtrl: notification_sent
+MsgCtrl -> View: redirect messages.show(message_id)
+View --> Admin: show success + updated message
+
+@enduml

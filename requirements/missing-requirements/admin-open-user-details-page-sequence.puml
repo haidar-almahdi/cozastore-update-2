@@ -1,0 +1,12 @@
+@startuml
+actor Admin
+participant UI
+participant "Admin UserController" as C
+database DB
+
+Admin -> UI: View user details
+UI -> C: GET /admin/users/{id}
+C -> DB: find user
+DB --> C: user data
+C --> UI: render details
+@enduml

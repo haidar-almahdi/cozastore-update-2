@@ -1,0 +1,20 @@
+@startuml View Cart - Sequence Diagram
+
+actor Customer
+participant "CartController" as CartCtrl
+participant "Cart" as Cart
+participant "CartItem" as CartItem
+participant "View" as View
+
+== View Cart ==
+Customer -> CartCtrl: index()
+CartCtrl -> Cart: getActiveCart()
+Cart --> CartCtrl: cart
+CartCtrl -> CartItem: where(cart_id)->with(product)
+CartItem --> CartCtrl: cart_items
+CartCtrl -> Cart: getTotal()
+Cart --> CartCtrl: total
+CartCtrl -> View: show cart.index(cart, cart_items, total)
+View --> Customer: display cart page
+
+@enduml

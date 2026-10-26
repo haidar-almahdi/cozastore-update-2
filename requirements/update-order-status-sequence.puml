@@ -1,0 +1,30 @@
+@startuml Update Order Status - Sequence Diagram
+
+actor Admin
+participant "OrderController" as OrderCtrl
+participant "Order" as Order
+participant "Product" as Product
+participant "Notification" as Notif
+participant "View" as View
+
+== Update Order Status ==
+Admin -> OrderCtrl: updateStatus(order_id, new_status)
+OrderCtrl -> OrderCtrl: checkAdminPermission()
+OrderCtrl -> Order: find(order_id)
+Order --> OrderCtrl: order
+alt Status is 'cancelled'
+  OrderCtrl -> Order: items()->get()
+  Order --> OrderCtrl: order_items
+  loop For each item
+    OrderCtrl -> Product: incrementStock(product_id, quantity)
+    Product --> OrderCtrl: stock_updated
+  end
+end
+OrderCtrl -> Order: update(status: new_status)
+Order --> OrderCtrl: updated
+OrderCtrl -> Notif: sendToUser(order->user)
+Notif --> OrderCtrl: notification_sent
+OrderCtrl -> View: redirect orders.show(order_id)
+View --> Admin: show success message
+
+@enduml

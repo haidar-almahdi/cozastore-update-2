@@ -1,0 +1,12 @@
+@startuml
+actor Admin
+participant "Admin Product UI" as AUI
+participant "Product Controller" as PC
+database DB
+
+Admin -> AUI: تفعيل Featured
+AUI -> PC: PUT product with is_featured=true
+PC -> DB: update product
+DB --> PC: success
+PC --> AUI: success message
+@enduml

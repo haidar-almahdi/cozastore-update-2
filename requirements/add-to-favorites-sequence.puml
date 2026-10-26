@@ -1,0 +1,28 @@
+@startuml Add to Favorites - Sequence Diagram
+
+actor Customer
+participant "FavoriteController" as FavCtrl
+participant "Product" as Product
+participant "Favorite" as Favorite
+participant "View" as View
+
+== Add to Favorites ==
+Customer -> FavCtrl: store(product_id)
+FavCtrl -> FavCtrl: checkAuthentication()
+FavCtrl -> Product: find(product_id)
+Product --> FavCtrl: product
+FavCtrl -> Favorite: where(user_id, product_id)->exists()
+Favorite --> FavCtrl: exists_check
+alt Product already in favorites
+  FavCtrl -> View: return error message
+  View --> Customer: "Already in favorites"
+else Product not in favorites
+  FavCtrl -> Favorite: create(user_id, product_id)
+  Favorite --> FavCtrl: favorite_created
+  FavCtrl -> Favorite: count(user_id)
+  Favorite --> FavCtrl: favorites_count
+  FavCtrl -> View: return success + count
+  View --> Customer: update UI + show success
+end
+
+@enduml

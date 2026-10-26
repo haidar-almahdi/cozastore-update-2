@@ -1,0 +1,12 @@
+@startuml
+actor Admin
+participant "Messages UI" as UI
+participant "ContactMessageController" as C
+database DB
+
+Admin -> UI: تحديد الفلاتر
+UI -> C: GET /admin/messages?status=...
+C -> DB: query with filters
+DB --> C: filtered messages
+C --> UI: render list
+@enduml

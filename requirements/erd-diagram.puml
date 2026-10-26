@@ -1,0 +1,209 @@
+@startuml CozaStore ERD Diagram
+
+' Entities
+entity "users" as users {
+  * id : INT <<PK>>
+  --
+  name : VARCHAR(255)
+  email : VARCHAR(255) <<UNIQUE>>
+  password : VARCHAR(255)
+  phone : VARCHAR(20)
+  address : TEXT
+  gender : ENUM('male','female')
+  role : ENUM('customer','admin')
+  email_verified_at : TIMESTAMP
+  loyalty_points_balance : INT
+  remember_token : VARCHAR(100)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "products" as products {
+  * id : INT <<PK>>
+  --
+  * category_id : INT <<FK>>
+  name : VARCHAR(255)
+  slug : VARCHAR(255) <<UNIQUE>>
+  description : TEXT
+  price : DECIMAL(10,2)
+  stock : INT
+  sizes : JSON
+  size_stocks : JSON
+  colors : JSON
+  image : VARCHAR(255)
+  additional_images : JSON
+  is_featured : BOOLEAN
+  is_active : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "categories" as categories {
+  * id : INT <<PK>>
+  --
+  name : VARCHAR(255)
+  slug : VARCHAR(255) <<UNIQUE>>
+  description : TEXT
+  image : VARCHAR(255)
+  is_active : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "carts" as carts {
+  * id : INT <<PK>>
+  --
+  user_id : INT <<FK>>
+  session_id : VARCHAR(255)
+  status : ENUM('active','completed')
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "cart_items" as cart_items {
+  * id : INT <<PK>>
+  --
+  * cart_id : INT <<FK>>
+  * product_id : INT <<FK>>
+  quantity : INT
+  price : DECIMAL(10,2)
+  size : VARCHAR(50)
+  color : VARCHAR(50)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "orders" as orders {
+  * id : INT <<PK>>
+  --
+  * user_id : INT <<FK>>
+  order_number : VARCHAR(255) <<UNIQUE>>
+  total_amount : DECIMAL(10,2)
+  status : ENUM('pending','processing','completed','cancelled')
+  shipping_name : VARCHAR(255)
+  shipping_phone : VARCHAR(20)
+  shipping_address : TEXT
+  notes : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "order_items" as order_items {
+  * id : INT <<PK>>
+  --
+  * order_id : INT <<FK>>
+  * product_id : INT <<FK>>
+  quantity : INT
+  price : DECIMAL(10,2)
+  size : VARCHAR(50)
+  color : VARCHAR(50)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "favorites" as favorites {
+  * id : INT <<PK>>
+  --
+  * user_id : INT <<FK>>
+  * product_id : INT <<FK>>
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "product_comments" as product_comments {
+  * id : INT <<PK>>
+  --
+  * user_id : INT <<FK>>
+  * product_id : INT <<FK>>
+  content : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "product_ratings" as product_ratings {
+  * id : INT <<PK>>
+  --
+  * user_id : INT <<FK>>
+  * product_id : INT <<FK>>
+  stars : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "contact_messages" as contact_messages {
+  * id : INT <<PK>>
+  --
+  name : VARCHAR(255)
+  email : VARCHAR(255)
+  subject : VARCHAR(255)
+  message : TEXT
+  is_read : BOOLEAN
+  read_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "message_replies" as message_replies {
+  * id : INT <<PK>>
+  --
+  * contact_message_id : INT <<FK>>
+  * admin_user_id : INT <<FK>>
+  reply_message : TEXT
+  is_read_by_user : BOOLEAN
+  read_by_user_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "loyalty_point_transactions" as loyalty_point_transactions {
+  * id : INT <<PK>>
+  --
+  * user_id : INT <<FK>>
+  points : INT
+  type : ENUM('earned','redeemed')
+  reference_type : VARCHAR(255)
+  reference_id : INT
+  description : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "size_guides" as size_guides {
+  * id : INT <<PK>>
+  --
+  name : VARCHAR(255)
+  scope_type : ENUM('global','category','product')
+  scope_id : INT
+  gender : ENUM('men','women','kids','unisex')
+  unit : ENUM('cm','inch')
+  table_schema : JSON
+  rows : JSON
+  is_active : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+' Relationships
+users ||--o{ orders : "places"
+users ||--o{ carts : "has"
+users ||--o{ favorites : "creates"
+users ||--o{ product_comments : "writes"
+users ||--o{ product_ratings : "gives"
+users ||--o{ loyalty_point_transactions : "earns"
+users ||--o{ message_replies : "sends (as admin)"
+
+categories ||--o{ products : "contains"
+
+products ||--o{ cart_items : "added to"
+products ||--o{ order_items : "included in"
+products ||--o{ favorites : "favorited in"
+products ||--o{ product_comments : "has"
+products ||--o{ product_ratings : "rated by"
+
+carts ||--o{ cart_items : "contains"
+
+orders ||--o{ order_items : "contains"
+
+contact_messages ||--o{ message_replies : "has"
+
+@enduml

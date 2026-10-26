@@ -1,0 +1,342 @@
+@startuml CozaStore Class Diagram - Complete
+
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam class {
+    BackgroundColor<<Entity>> #E8F4FC
+    BorderColor Black
+    ArrowColor Black
+}
+skinparam packageStyle rectangle
+
+package "المستخدمون والولاء" {
+
+    class User <<Entity>> {
+        -id : int
+        -name : string
+        -email : string
+        -password : string
+        -phone : string
+        -address : string
+        -gender : string
+        -role : enum {admin, customer, driver}
+        -email_verified_at : datetime
+        -loyalty_points_balance : int
+        -wallet_balance : decimal
+        -remember_token : string
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +isAdmin() : bool
+        +isCustomer() : bool
+        +isDriver() : bool
+        +orders() : HasMany
+        +assignedDeliveries() : HasMany
+        +carts() : HasMany
+        +activeCart() : HasOne
+        +favorites() : HasMany
+        +favoriteProducts() : BelongsToMany
+        +loyaltyTransactions() : HasMany
+        +hasFavorited(Product) : bool
+        +addToFavorites(Product) : void
+        +removeFromFavorites(Product) : void
+    }
+
+    class LoyaltyPointTransaction <<Entity>> {
+        -id : int
+        -user_id : int
+        -points : int
+        -type : string
+        -reference_type : string
+        -reference_id : int
+        -description : text
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +user() : BelongsTo
+        +reference() : MorphTo
+    }
+}
+
+package "الكتالوج" {
+
+    class Category <<Entity>> {
+        -id : int
+        -name : string
+        -slug : string
+        -description : text
+        -image : string
+        -is_active : bool
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +products() : HasMany
+        +getRouteKeyName() : string
+    }
+
+    class Product <<Entity>> {
+        -id : int
+        -name : string
+        -slug : string
+        -description : text
+        -price : decimal
+        -stock : int
+        -sizes : array
+        -size_stocks : array
+        -colors : array
+        -image : string
+        -additional_images : array
+        -ai_keywords : array
+        -is_featured : bool
+        -is_active : bool
+        -category_id : int
+        -discount_percentage : int
+        -discount_starts_at : datetime
+        -discount_ends_at : datetime
+        -black_friday_enabled : bool
+        -quick_offer_enabled : bool
+        -quick_offer_percentage : int
+        -quick_offer_starts_at : datetime
+        -quick_offer_ends_at : datetime
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +category() : BelongsTo
+        +orderItems() : HasMany
+        +cartItems() : HasMany
+        +favorites() : HasMany
+        +comments() : HasMany
+        +ratings() : HasMany
+        +isManualDiscountActive() : bool
+        +isBlackFridayActive() : bool
+        +isQuickOfferActive() : bool
+        +getCurrentPriceAttribute() : float
+        +getEffectiveDiscountPercentageAttribute() : int
+        +getImageUrlAttribute() : string
+        +isFavoritedBy(User) : bool
+        +getRouteKeyName() : string
+        +{static} getBlackFridaySettings() : array
+    }
+
+    class SizeGuide <<Entity>> {
+        -id : int
+        -name : string
+        -scope_type : string
+        -scope_id : int
+        -gender : string
+        -unit : string
+        -table_schema : array
+        -rows : array
+        -is_active : bool
+        -created_at : timestamp
+        -updated_at : timestamp
+    }
+
+    class SiteSetting <<Entity>> {
+        -id : int
+        -key : string
+        -value : string
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +{static} getValue(key, default) : mixed
+        +{static} setValue(key, value) : void
+    }
+}
+
+package "السلة والطلبات" {
+
+    class Cart <<Entity>> {
+        -id : int
+        -user_id : int
+        -session_id : string
+        -status : string
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +user() : BelongsTo
+        +items() : HasMany
+        +products() : BelongsToMany
+        +getTotalAttribute() : decimal
+        +getItemCountAttribute() : int
+        +isEmpty() : bool
+        +hasOutOfStockItems() : bool
+        +getOutOfStockItems() : Collection
+        +clear() : bool
+        +addItem(Product, qty, size, color) : mixed
+        +updateItem(Product, qty, size, color) : bool
+        +removeItem(Product, size, color) : bool
+        +scopeActive(query) : Builder
+    }
+
+    class CartItem <<Entity>> {
+        -id : int
+        -cart_id : int
+        -product_id : int
+        -quantity : int
+        -price : decimal
+        -size : string
+        -color : string
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +cart() : BelongsTo
+        +product() : BelongsTo
+        +getSubtotalAttribute() : decimal
+        +isAvailable() : bool
+        +getMaxOrderableQuantityAttribute() : int
+        +hasOptions() : bool
+        +getOptionsAttribute() : string
+    }
+
+    class Order <<Entity>> {
+        -id : int
+        -user_id : int
+        -driver_id : int
+        -order_number : string
+        -total_amount : decimal
+        -status : enum {pending, processing, completed, cancelled}
+        -shipping_name : string
+        -shipping_phone : string
+        -shipping_address : text
+        -notes : text
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +user() : BelongsTo
+        +driver() : BelongsTo
+        +items() : HasMany
+        +products() : BelongsToMany
+    }
+
+    class OrderItem <<Entity>> {
+        -id : int
+        -order_id : int
+        -product_id : int
+        -quantity : int
+        -price : decimal
+        -size : string
+        -color : string
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +order() : BelongsTo
+        +product() : BelongsTo
+    }
+}
+
+package "التفاعل والرسائل" {
+
+    class Favorite <<Entity>> {
+        -id : int
+        -user_id : int
+        -product_id : int
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +user() : BelongsTo
+        +product() : BelongsTo
+    }
+
+    class ProductComment <<Entity>> {
+        -id : int
+        -user_id : int
+        -product_id : int
+        -content : text
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +user() : BelongsTo
+        +product() : BelongsTo
+    }
+
+    class ProductRating <<Entity>> {
+        -id : int
+        -user_id : int
+        -product_id : int
+        -stars : int
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +user() : BelongsTo
+        +product() : BelongsTo
+    }
+
+    class ContactMessage <<Entity>> {
+        -id : int
+        -name : string
+        -email : string
+        -subject : string
+        -message : text
+        -is_read : bool
+        -read_at : datetime
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +replies() : HasMany
+        +markAsRead() : void
+        +hasReplies() : bool
+        +latestReply() : MessageReply
+        +scopeUnread(query) : Builder
+        +scopeRead(query) : Builder
+    }
+
+    class MessageReply <<Entity>> {
+        -id : int
+        -contact_message_id : int
+        -admin_user_id : int
+        -reply_message : text
+        -is_read_by_user : bool
+        -read_by_user_at : datetime
+        -created_at : timestamp
+        -updated_at : timestamp
+        --
+        +contactMessage() : BelongsTo
+        +admin() : BelongsTo
+        +markAsReadByUser() : void
+    }
+}
+
+' ===== Relationships (بدون تكرار عكسي) =====
+
+Category "1" --> "*" Product : products()
+User "1" --> "*" Cart : carts()
+User "1" --> "*" Order : orders()
+User "1" --> "*" Order : assignedDeliveries()\n(driver_id)
+User "1" --> "*" Favorite : favorites()
+User "1" --> "*" ProductComment : writes
+User "1" --> "*" ProductRating : rates
+User "1" --> "*" LoyaltyPointTransaction : loyaltyTransactions()
+User "1" --> "*" MessageReply : admin replies
+
+Cart "1" *-- "*" CartItem : items()
+Order "1" *-- "*" OrderItem : items()
+ContactMessage "1" *-- "*" MessageReply : replies()
+
+Product "1" --> "*" CartItem : cartItems()
+Product "1" --> "*" OrderItem : orderItems()
+Product "1" --> "*" Favorite : favorites()
+Product "1" --> "*" ProductComment : comments()
+Product "1" --> "*" ProductRating : ratings()
+
+LoyaltyPointTransaction --> User : user()
+CartItem --> Product
+OrderItem --> Product
+Favorite --> Product
+MessageReply --> ContactMessage
+
+note right of Order
+  status: pending → processing
+  → completed | cancelled
+  السائق يقبل الطلب (accept)
+  ثم يؤكد التسليم (markDelivered)
+end note
+
+note right of Product
+  السعر الفعلي عبر
+  current_price (خصم يدوي /
+  عرض سريع / الجمعة السوداء)
+end note
+
+@enduml

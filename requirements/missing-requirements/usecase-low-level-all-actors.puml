@@ -1,0 +1,68 @@
+@startuml Use Case Low Level - All Actors
+left to right direction
+skinparam packageStyle rectangle
+
+actor Guest
+actor Customer
+actor Admin
+actor Driver
+
+rectangle "CozaStore System" {
+  package "Public" {
+    usecase "Browse Products" as U1
+    usecase "Search Products" as U2
+    usecase "View Product Details" as U3
+    usecase "Register" as U4
+    usecase "Login" as U5
+  }
+  package "Customer" {
+    usecase "Add to Cart" as U6
+    usecase "Update Cart" as U7
+    usecase "Checkout" as U8
+    usecase "View Orders" as U9
+    usecase "Cancel Order" as U10
+    usecase "Manage Favorites" as U11
+    usecase "Rate & Comment" as U12
+  }
+  package "Admin" {
+    usecase "Manage Products" as U13
+    usecase "Manage Quick Offers" as U14
+    usecase "Manage Black Friday Settings" as U15
+    usecase "Manage Categories" as U16
+    usecase "Manage Users/Drivers" as U17
+    usecase "Manage Orders" as U18
+    usecase "Manage Messages" as U19
+  }
+  package "Driver" {
+    usecase "Accept Order" as U20
+    usecase "Mark Delivered" as U21
+    usecase "View Active Orders" as U22
+  }
+}
+
+Guest --> U1
+Guest --> U2
+Guest --> U3
+Guest --> U4
+Guest --> U5
+
+Customer --> U6
+Customer --> U7
+Customer --> U8
+Customer --> U9
+Customer --> U10
+Customer --> U11
+Customer --> U12
+
+Admin --> U13
+Admin --> U14
+Admin --> U15
+Admin --> U16
+Admin --> U17
+Admin --> U18
+Admin --> U19
+
+Driver --> U20
+Driver --> U21
+Driver --> U22
+@enduml

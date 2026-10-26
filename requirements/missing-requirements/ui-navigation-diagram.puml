@@ -1,0 +1,95 @@
+@startuml CozaStore UI Navigation
+left to right direction
+skinparam packageStyle rectangle
+
+actor Guest
+actor Customer
+actor Admin
+actor Driver
+
+rectangle "Public UI" {
+  [Home]
+  [Products List]
+  [Product Details]
+  [Search Results]
+  [About]
+  [Contact]
+  [Login]
+  [Register]
+}
+
+rectangle "Customer UI" {
+  [Cart]
+  [Checkout]
+  [My Orders]
+  [Order Details]
+  [Favorites]
+  [Profile]
+  [My Messages]
+  [Black Friday Page]
+}
+
+rectangle "Admin UI" {
+  [Admin Dashboard]
+  [Products Management]
+  [Quick Offers]
+  [Discount Settings]
+  [Categories Management]
+  [Orders Management]
+  [Users Management]
+  [Messages Management]
+  [Loyalty Management]
+}
+
+rectangle "Driver UI" {
+  [Driver Home]
+  [Available Orders]
+  [My Active Orders]
+  [Driver Order Details]
+}
+
+[Home] --> [Products List]
+[Products List] --> [Product Details]
+[Home] --> [Search Results]
+[Home] --> [Black Friday Page]
+[Home] --> [About]
+[Home] --> [Contact]
+[Home] --> [Login]
+[Home] --> [Register]
+
+[Product Details] --> [Cart]
+[Cart] --> [Checkout]
+[Checkout] --> [My Orders]
+[My Orders] --> [Order Details]
+[Product Details] --> [Favorites]
+[Home] --> [Profile]
+[Home] --> [My Messages]
+
+[Admin Dashboard] --> [Products Management]
+[Products Management] --> [Quick Offers]
+[Admin Dashboard] --> [Discount Settings]
+[Admin Dashboard] --> [Categories Management]
+[Admin Dashboard] --> [Orders Management]
+[Admin Dashboard] --> [Users Management]
+[Admin Dashboard] --> [Messages Management]
+[Admin Dashboard] --> [Loyalty Management]
+
+[Driver Home] --> [Available Orders]
+[Available Orders] --> [My Active Orders]
+[My Active Orders] --> [Driver Order Details]
+
+Guest --> [Home]
+Guest --> [Products List]
+Guest --> [Product Details]
+Guest --> [Login]
+Guest --> [Register]
+
+Customer --> [Cart]
+Customer --> [Checkout]
+Customer --> [My Orders]
+Customer --> [Favorites]
+Customer --> [Profile]
+
+Admin --> [Admin Dashboard]
+Driver --> [Driver Home]
+@enduml

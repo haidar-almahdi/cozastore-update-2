@@ -1,0 +1,18 @@
+@startuml Admin Delete Product - Sequence Diagram
+
+actor Admin
+participant "ProductController" as ProductCtrl
+participant "Product" as Product
+participant "Storage" as Storage
+participant "View" as View
+
+== Delete Product ==
+Admin -> ProductCtrl: destroy(product)
+ProductCtrl -> Storage: delete(product->image)
+Storage --> ProductCtrl: image_deleted
+ProductCtrl -> Product: delete()
+Product --> ProductCtrl: product_deleted
+ProductCtrl -> View: redirect to products.index
+View --> Admin: show "Product deleted successfully"
+
+@enduml

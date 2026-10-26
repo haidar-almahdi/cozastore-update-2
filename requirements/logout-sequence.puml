@@ -1,0 +1,20 @@
+@startuml Logout - Sequence Diagram
+
+actor User
+participant "LogoutController" as LogoutCtrl
+participant "Auth" as Auth
+participant "Session" as Session
+participant "View" as View
+
+== Logout ==
+User -> LogoutCtrl: destroy()
+LogoutCtrl -> Auth: logout()
+Auth -> Session: invalidate()
+Session --> Auth: session_ended
+Auth -> Session: regenerateToken()
+Session --> Auth: token_regenerated
+Auth --> LogoutCtrl: logged_out
+LogoutCtrl -> View: redirect to home
+View --> User: display home page
+
+@enduml

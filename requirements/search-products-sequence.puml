@@ -1,0 +1,25 @@
+@startuml Search Products - Sequence Diagram
+
+actor User
+participant "SearchController" as SearchCtrl
+participant "Product" as Product
+participant "Category" as Category
+participant "View" as View
+
+== Search ==
+User -> SearchCtrl: results(request)
+SearchCtrl -> Product: where(name, LIKE, query)
+Product --> SearchCtrl: products
+SearchCtrl -> Category: where(name, LIKE, query)
+Category --> SearchCtrl: categories
+SearchCtrl -> View: show search.results(products, categories, query)
+View --> User: display search results
+
+== Quick Suggestions ==
+User -> SearchCtrl: suggestions(request)
+SearchCtrl -> Product: where(name, LIKE, query)->limit(5)
+Product --> SearchCtrl: suggestions
+SearchCtrl -> View: return JSON(suggestions)
+View --> User: display suggestions dropdown
+
+@enduml

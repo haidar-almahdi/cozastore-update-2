@@ -1,0 +1,13 @@
+@startuml
+start
+:Admin opens dashboard;
+if (Sidebar has many items?) then (Yes)
+  :Scroll down/up in sidebar;
+endif
+:Click hide button;
+:Sidebar collapses;
+:Main content expands;
+:Click show button;
+:Sidebar opens again;
+stop
+@enduml

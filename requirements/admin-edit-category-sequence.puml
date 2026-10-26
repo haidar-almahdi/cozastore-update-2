@@ -1,0 +1,53 @@
+@startuml
+actor "Admin" as Admin
+participant "View (Index)" as IndexView
+participant "Route (web.php)" as Route
+participant "Controller (CategoryController)" as Controller
+participant "Model (Category)" as CategoryModel
+participant "View (Edit Form)" as EditView
+
+Admin -> IndexView: النقر على "تعديل"
+IndexView -> Route: GET /admin/categories/{id}/edit
+Route -> Controller: edit(category)
+
+activate Controller
+    Controller -> EditView: return view('admin.categories.edit', compact('category'))
+    activate EditView
+        EditView --> Admin: عرض نموذج التعديل
+    deactivate EditView
+deactivate Controller
+
+Admin -> EditView: تعديل البيانات والنقر على "تحديث"
+EditView -> Route: PUT /admin/categories/{id}
+Route -> Controller: update(request, category)
+
+activate Controller
+    Controller -> Controller: validate(request)
+    alt Validation Fails
+        Controller --> Admin: Redirect back with errors
+    else Validation Passes
+        Controller -> Controller: Str::slug(name)
+        
+        opt Has Image File
+            Controller -> Controller: Check extension
+            alt Invalid Extension
+                Controller --> Admin: Redirect back with error
+            else Valid Extension
+                Controller -> CategoryModel: image (get old path)
+                Controller -> Controller: unlink(old_path)
+                Controller -> Controller: move(new_file)
+            end
+        end
+
+        Controller -> CategoryModel: update(data)
+        activate CategoryModel
+            CategoryModel --> Controller: true
+        deactivate CategoryModel
+
+        Controller -> IndexView: redirect()->route('admin.categories.index')
+        activate IndexView
+            IndexView --> Admin: عرض القائمة مع رسالة نجاح
+        deactivate IndexView
+    end
+deactivate Controller
+@enduml

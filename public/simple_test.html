@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Multiple Upload Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .preview { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+        .preview img { width: 100px; height: 100px; object-fit: cover; border: 1px solid #ccc; }
+        input[type="file"] { margin: 10px 0; padding: 10px; }
+        .info { background: #f0f0f0; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>اختبار بسيط لرفع عدة صور</h1>
+
+    <div class="info">
+        <strong>التعليمات:</strong>
+        <ol>
+            <li>اضغط على "Choose Files"</li>
+            <li>اختر عدة صور (Ctrl + Click أو Cmd + Click)</li>
+            <li>يجب أن تظهر الصور في المعاينة أدناه</li>
+        </ol>
+    </div>
+
+    <form>
+        <label>اختر عدة صور:</label><br>
+        <input type="file" multiple accept="image/*" onchange="showFiles(this)"><br>
+
+        <div id="info"></div>
+        <div id="preview" class="preview"></div>
+    </form>
+
+    <script>
+        function showFiles(input) {
+            const info = document.getElementById('info');
+            const preview = document.getElementById('preview');
+
+            info.innerHTML = '';
+            preview.innerHTML = '';
+
+            if (input.files.length === 0) {
+                info.innerHTML = '<p style="color: red;">لم يتم اختيار أي ملف</p>';
+                return;
+            }
+
+            info.innerHTML = `<p style="color: green;">تم اختيار ${input.files.length} ملف</p>`;
+
+            Array.from(input.files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.title = file.name;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Test on page load
+        window.onload = function() {
+            console.log('Page loaded');
+            const input = document.querySelector('input[type="file"]');
+            console.log('Multiple supported:', input.multiple);
+            console.log('File API supported:', !!(window.File && window.FileReader && window.FileList && window.Blob));
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Multiple File Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .image-preview {
+            position: relative;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 150px;
+            height: 120px;
+        }
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .counter {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .submit-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Multiple Images Upload</h1>
+
+    <form id="testForm" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="images">Select Multiple Images:</label>
+            <input type="file"
+                   id="images"
+                   name="additional_images[]"
+                   multiple
+                   accept="image/*"
+                   onchange="handleFileSelect(this)">
+            <small style="color: #666;">Hold Ctrl/Cmd to select multiple images (Max: 8 images, 2MB each)</small>
+        </div>
+
+        <div class="counter" id="counter">0/8 images selected</div>
+
+        <div class="preview-container" id="preview"></div>
+
+        <div class="form-group" style="margin-top: 30px;">
+            <button type="button" class="submit-btn" onclick="showSelectedFiles()">Show Selected Files Info</button>
+        </div>
+    </form>
+
+    <script>
+        let selectedFiles = [];
+
+        function handleFileSelect(input) {
+            const preview = document.getElementById('preview');
+            const counter = document.getElementById('counter');
+
+            // Clear previous preview
+            preview.innerHTML = '';
+            selectedFiles = [];
+
+            if (input.files && input.files.length > 0) {
+                // Limit to 8 files
+                const files = Array.from(input.files).slice(0, 8);
+                selectedFiles = files;
+
+                // Update counter
+                counter.textContent = `${files.length}/8 images selected`;
+
+                files.forEach((file, index) => {
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert(`File "${file.name}" is not a valid image.`);
+                        return;
+                    }
+
+                    // Validate file size (2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert(`File "${file.name}" is too large. Maximum size is 2MB.`);
+                        return;
+                    }
+
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageDiv = document.createElement('div');
+                        imageDiv.className = 'image-preview';
+                        imageDiv.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview ${index + 1}">
+                            <button type="button" class="remove-btn" onclick="removeImage(${index})" title="Remove image">×</button>
+                        `;
+                        preview.appendChild(imageDiv);
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                if (input.files.length > 8) {
+                    alert('Maximum 8 images allowed. Only the first 8 images were selected.');
+                }
+            } else {
+                counter.textContent = '0/8 images selected';
+            }
+        }
+
+        function removeImage(index) {
+            const input = document.getElementById('images');
+            const dt = new DataTransfer();
+
+            // Add all files except the one being removed
+            selectedFiles.forEach((file, i) => {
+                if (i !== index) {
+                    dt.items.add(file);
+                }
+            });
+
+            // Update input files
+            input.files = dt.files;
+
+            // Refresh preview
+            handleFileSelect(input);
+        }
+
+        function showSelectedFiles() {
+            const input = document.getElementById('images');
+            if (input.files.length === 0) {
+                alert('No files selected!');
+                return;
+            }
+
+            let info = `Selected ${input.files.length} files:\\n\\n`;
+            Array.from(input.files).forEach((file, index) => {
+                info += `${index + 1}. ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)\\n`;
+            });
+
+            alert(info);
+        }
+
+        // Test if multiple attribute is working
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('images');
+            console.log('Multiple attribute:', input.multiple);
+            console.log('Accept attribute:', input.accept);
+
+            // Add change event listener for debugging
+            input.addEventListener('change', function(e) {
+                console.log('Files selected:', e.target.files.length);
+                console.log('Files:', Array.from(e.target.files).map(f => f.name));
+            });
+        });
+    </script>
+</body>
+</html>

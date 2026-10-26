@@ -1,0 +1,73 @@
+@startuml Place Order - Sequence Diagram
+
+actor Customer
+participant "OrderController" as OrderCtrl
+participant "CartController" as CartCtrl
+participant "Cart" as Cart
+participant "Order" as Order
+participant "Product" as Product
+participant "LoyaltyService" as Loyalty
+participant "View" as View
+
+== Show Cart ==
+Customer -> CartCtrl: index()
+CartCtrl -> Cart: getActiveCart()
+Cart --> CartCtrl: cart
+CartCtrl -> View: show cart.index(cart)
+View --> Customer: display cart
+
+== Show Checkout ==
+Customer -> OrderCtrl: checkout()
+OrderCtrl -> Cart: getActiveCart()
+Cart --> OrderCtrl: cart
+OrderCtrl -> Cart: hasOutOfStockItems()
+Cart --> OrderCtrl: availability
+OrderCtrl -> View: show checkout(cart)
+View --> Customer: display checkout form
+
+== Place Order ==
+Customer -> OrderCtrl: store(request)
+OrderCtrl -> OrderCtrl: validate(request)
+OrderCtrl -> Cart: getActiveCart()
+Cart --> OrderCtrl: cart
+OrderCtrl -> Cart: hasOutOfStockItems()
+Cart --> OrderCtrl: availability
+OrderCtrl -> Order: create()
+Order --> OrderCtrl: order
+OrderCtrl -> Order: items()->create()
+Order --> OrderCtrl: order_items
+OrderCtrl -> Product: decrementStock()
+Product --> OrderCtrl: updated
+OrderCtrl -> Loyalty: awardPointsForOrder()
+Loyalty --> OrderCtrl: points_awarded
+OrderCtrl -> Cart: clear()
+Cart --> OrderCtrl: cleared
+OrderCtrl -> View: redirect orders.show(order)
+View --> Customer: display order confirmation
+
+== View My Orders ==
+Customer -> OrderCtrl: index()
+OrderCtrl -> Order: where(user_id)->get()
+Order --> OrderCtrl: orders
+OrderCtrl -> View: show orders.index(orders)
+View --> Customer: display orders list
+
+== View Order Details ==
+Customer -> OrderCtrl: show(order)
+OrderCtrl -> Order: find(id)
+Order --> OrderCtrl: order
+OrderCtrl -> Order: items()->with(product)
+Order --> OrderCtrl: order_items
+OrderCtrl -> View: show orders.show(order)
+View --> Customer: display order details
+
+== Cancel Order ==
+Customer -> OrderCtrl: cancel(order)
+OrderCtrl -> Order: update(status: 'cancelled')
+Order --> OrderCtrl: updated
+OrderCtrl -> Product: incrementStock()
+Product --> OrderCtrl: stock_restored
+OrderCtrl -> View: redirect orders.index()
+View --> Customer: display success message
+
+@enduml

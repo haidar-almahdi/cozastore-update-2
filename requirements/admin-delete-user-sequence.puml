@@ -1,0 +1,15 @@
+@startuml Admin Delete User - Sequence Diagram
+
+actor Admin
+participant "UserController" as UserCtrl
+participant "User" as User
+participant "View" as View
+
+== Delete User ==
+Admin -> UserCtrl: destroy(user)
+UserCtrl -> User: delete()
+User --> UserCtrl: user_deleted
+UserCtrl -> View: redirect to users.index
+View --> Admin: show "User deleted successfully"
+
+@enduml

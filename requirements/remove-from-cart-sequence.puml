@@ -1,0 +1,15 @@
+@startuml Remove from Cart - Sequence Diagram
+
+actor Customer
+participant "CartController" as CartCtrl
+participant "CartItem" as CartItem
+participant "View" as View
+
+== Remove from Cart ==
+Customer -> CartCtrl: remove(item)
+CartCtrl -> CartItem: delete()
+CartItem --> CartCtrl: deleted
+CartCtrl -> View: redirect with success
+View --> Customer: show "Item removed from cart"
+
+@enduml

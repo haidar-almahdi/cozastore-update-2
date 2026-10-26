@@ -1,0 +1,30 @@
+@startuml Admin Add User - Sequence Diagram
+
+actor Admin
+participant "UserController" as UserCtrl
+participant "User" as User
+participant "Hash" as Hash
+participant "View" as View
+
+== Show Create Form ==
+Admin -> UserCtrl: create()
+UserCtrl -> View: show admin.users.create
+View --> Admin: display create form
+
+== Store User ==
+Admin -> UserCtrl: store(request)
+UserCtrl -> UserCtrl: validate(request)
+
+alt Validation fails
+    UserCtrl -> View: redirect with errors
+    View --> Admin: show validation errors
+else Validation passes
+    UserCtrl -> Hash: make(password)
+    Hash --> UserCtrl: hashed_password
+    UserCtrl -> User: create()
+    User --> UserCtrl: user_created
+    UserCtrl -> View: redirect to users.index
+    View --> Admin: show "User added successfully"
+end
+
+@enduml

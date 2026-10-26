@@ -1,0 +1,21 @@
+@startuml View Product Details - Sequence Diagram
+
+actor User
+participant "ProductController" as ProductCtrl
+participant "Product" as Product
+participant "ProductComment" as Comment
+participant "ProductRating" as Rating
+participant "View" as View
+
+== View Product ==
+User -> ProductCtrl: show(product)
+ProductCtrl -> Product: find(id)
+Product --> ProductCtrl: product
+ProductCtrl -> Comment: where(product_id)->with(user)
+Comment --> ProductCtrl: comments
+ProductCtrl -> Rating: where(product_id)->with(user)
+Rating --> ProductCtrl: ratings
+ProductCtrl -> View: show product.show(product, comments, ratings)
+View --> User: display product details
+
+@enduml

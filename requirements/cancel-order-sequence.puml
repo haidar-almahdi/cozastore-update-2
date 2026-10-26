@@ -1,0 +1,34 @@
+@startuml Cancel Order - Sequence Diagram
+
+actor Customer
+participant "OrderController" as OrderCtrl
+participant "Order" as Order
+participant "OrderItem" as OrderItem
+participant "Product" as Product
+participant "View" as View
+
+== Cancel Order ==
+Customer -> OrderCtrl: cancel(order)
+OrderCtrl -> Order: find(id)
+Order --> OrderCtrl: order
+
+alt Order not pending
+    OrderCtrl -> View: redirect with error
+    View --> Customer: show "Cannot cancel order"
+else Order is pending
+    OrderCtrl -> Order: update(status: cancelled)
+    Order --> OrderCtrl: updated
+
+    OrderCtrl -> OrderItem: where(order_id)->get()
+    OrderItem --> OrderCtrl: items
+
+    loop For each item
+        OrderCtrl -> Product: incrementStock(quantity)
+        Product --> OrderCtrl: stock_restored
+    end
+
+    OrderCtrl -> View: redirect with success
+    View --> Customer: show "Order cancelled successfully"
+end
+
+@enduml

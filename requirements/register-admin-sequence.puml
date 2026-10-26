@@ -1,0 +1,33 @@
+@startuml Register Admin - Sequence Diagram
+
+actor Admin
+participant "AdminRegisterController" as RegCtrl
+participant "User" as User
+participant "Hash" as Hash
+participant "Auth" as Auth
+participant "View" as View
+
+== Show Register Form ==
+Admin -> RegCtrl: create()
+RegCtrl -> View: show admin.register
+View --> Admin: display register form
+
+== Register Admin ==
+Admin -> RegCtrl: store(request)
+RegCtrl -> RegCtrl: validate(request)
+
+alt Validation fails
+    RegCtrl -> View: redirect with errors
+    View --> Admin: show validation errors
+else Validation passes
+    RegCtrl -> Hash: make(password)
+    Hash --> RegCtrl: hashed_password
+    RegCtrl -> User: create(role: admin)
+    User --> RegCtrl: admin_created
+    RegCtrl -> Auth: login(user)
+    Auth --> RegCtrl: authenticated
+    RegCtrl -> View: redirect to admin.home
+    View --> Admin: display admin dashboard
+end
+
+@enduml

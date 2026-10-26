@@ -1,0 +1,20 @@
+@startuml
+start
+:Customer opens products/details page;
+if (has active discount?) then (Yes)
+  :Show current and original price;
+  :Show discount percentage badge;
+  if (Black Friday?) then (Yes)
+    :Show Black Friday badge;
+  else (No)
+    if (Quick Offer?) then (Yes)
+      :Show Quick Offer badge;
+    else (No)
+      :Show Manual Discount badge;
+    endif
+  endif
+else (No)
+  :Show original price only;
+endif
+stop
+@enduml

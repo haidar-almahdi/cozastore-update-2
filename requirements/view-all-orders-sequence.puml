@@ -1,0 +1,19 @@
+@startuml View All Orders - Sequence Diagram
+
+actor Admin
+participant "OrderController" as OrderCtrl
+participant "Order" as Order
+participant "User" as User
+participant "View" as View
+
+== View All Orders ==
+Admin -> OrderCtrl: index()
+OrderCtrl -> OrderCtrl: checkAdminPermission()
+OrderCtrl -> Order: with('user')->orderBy('created_at', 'desc')->get()
+Order --> OrderCtrl: orders
+OrderCtrl -> Order: getStatistics()
+Order --> OrderCtrl: statistics
+OrderCtrl -> View: show admin.orders.index(orders, statistics)
+View --> Admin: display orders list
+
+@enduml

@@ -1,0 +1,17 @@
+@startuml Filter Products by Category - Sequence Diagram
+
+actor User
+participant "ProductController" as ProductCtrl
+participant "Product" as Product
+participant "Category" as Category
+participant "View" as View
+
+User -> ProductCtrl: index(category_id)
+ProductCtrl -> Product: where(category_id)->where(is_active, true)
+Product --> ProductCtrl: filtered_products
+ProductCtrl -> Category: all()
+Category --> ProductCtrl: categories
+ProductCtrl -> View: show products.index(filtered_products, categories)
+View --> User: display filtered products
+
+@enduml

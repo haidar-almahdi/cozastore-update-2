@@ -1,0 +1,16 @@
+@startuml Clear Cart - Sequence Diagram
+
+actor Customer
+participant "CartController" as CartCtrl
+participant "Cart" as Cart
+participant "View" as View
+
+Customer -> CartCtrl: clear()
+CartCtrl -> Cart: getActiveCart()
+Cart --> CartCtrl: cart
+CartCtrl -> Cart: clear()
+Cart --> CartCtrl: cleared
+CartCtrl -> View: redirect with success
+View --> Customer: show "Cart cleared"
+
+@enduml

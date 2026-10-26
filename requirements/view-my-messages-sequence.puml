@@ -1,0 +1,17 @@
+@startuml View My Messages - Sequence Diagram
+
+actor Customer
+participant "MyMessagesController" as MsgCtrl
+participant "ContactMessage" as Message
+participant "MessageReply" as Reply
+participant "View" as View
+
+Customer -> MsgCtrl: index()
+MsgCtrl -> Message: where(email, user->email)->with(replies)
+Message --> MsgCtrl: messages
+MsgCtrl -> Reply: where(is_read_by_user, false)->count()
+Reply --> MsgCtrl: unread_count
+MsgCtrl -> View: show my-messages.index(messages, unread_count)
+View --> Customer: display messages list
+
+@enduml

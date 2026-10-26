@@ -1,0 +1,16 @@
+@startuml
+actor Customer
+participant "SizeGuideController" as C
+database DB
+
+Customer -> C: طلب دليل المقاسات
+C -> DB: query product scope
+alt غير موجود
+  C -> DB: query category scope
+end
+alt ما زال غير موجود
+  C -> DB: query general scope
+end
+DB --> C: guide/null
+C --> Customer: عرض الدليل أو رسالة عدم توفر
+@enduml

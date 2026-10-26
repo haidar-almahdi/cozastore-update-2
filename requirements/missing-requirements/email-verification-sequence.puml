@@ -1,0 +1,13 @@
+@startuml
+actor User
+participant App
+participant Mailer
+database DB
+
+User -> App: Register
+App -> DB: create user (unverified)
+App -> Mailer: send verification mail
+User -> App: open verification link
+App -> DB: set email_verified_at
+App --> User: account verified
+@enduml

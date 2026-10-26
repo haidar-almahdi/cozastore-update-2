@@ -1,0 +1,16 @@
+@startuml View Profile - Sequence Diagram
+
+actor Customer
+participant "ProfileController" as ProfileCtrl
+participant "Auth" as Auth
+participant "User" as User
+participant "View" as View
+
+== View Profile ==
+Customer -> ProfileCtrl: edit()
+ProfileCtrl -> Auth: user()
+Auth --> ProfileCtrl: current_user
+ProfileCtrl -> View: show profile.edit(user)
+View --> Customer: display profile page
+
+@enduml

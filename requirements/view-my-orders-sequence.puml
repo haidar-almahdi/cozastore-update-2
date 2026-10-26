@@ -1,0 +1,14 @@
+@startuml View My Orders - Sequence Diagram
+
+actor Customer
+participant "OrderController" as OrderCtrl
+participant "Order" as Order
+participant "View" as View
+
+Customer -> OrderCtrl: index()
+OrderCtrl -> Order: where(user_id)->orderBy(created_at, desc)
+Order --> OrderCtrl: orders
+OrderCtrl -> View: show orders.index(orders)
+View --> Customer: display orders list
+
+@enduml

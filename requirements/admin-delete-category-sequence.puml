@@ -1,0 +1,28 @@
+@startuml
+actor "Admin" as Admin
+participant "View (Index)" as IndexView
+participant "Route (web.php)" as Route
+participant "Controller (CategoryController)" as Controller
+participant "Model (Category)" as CategoryModel
+
+Admin -> IndexView: النقر على "حذف" وتأكيد
+IndexView -> Route: DELETE /admin/categories/{id}
+Route -> Controller: destroy(category)
+
+activate Controller
+    opt Has Image
+        Controller -> CategoryModel: image (get path)
+        Controller -> Controller: unlink(path)
+    end
+
+    Controller -> CategoryModel: delete()
+    activate CategoryModel
+        CategoryModel --> Controller: true
+    deactivate CategoryModel
+
+    Controller -> IndexView: redirect()->route('admin.categories.index')
+    activate IndexView
+        IndexView --> Admin: عرض القائمة مع رسالة نجاح
+    deactivate IndexView
+deactivate Controller
+@enduml

@@ -1,0 +1,19 @@
+@startuml View Message Details - Sequence Diagram
+
+actor Customer
+participant "MyMessagesController" as MsgCtrl
+participant "ContactMessage" as Message
+participant "MessageReply" as Reply
+participant "View" as View
+
+Customer -> MsgCtrl: show(message)
+MsgCtrl -> Message: find(id)
+Message --> MsgCtrl: message
+MsgCtrl -> Reply: where(contact_message_id)->get()
+Reply --> MsgCtrl: replies
+MsgCtrl -> Reply: update(is_read_by_user: true)
+Reply --> MsgCtrl: marked_read
+MsgCtrl -> View: show my-messages.show(message, replies)
+View --> Customer: display message details
+
+@enduml

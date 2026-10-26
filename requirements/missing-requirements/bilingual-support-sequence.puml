@@ -1,0 +1,13 @@
+@startuml
+actor User
+participant "Language UI" as UI
+participant "Language Controller" as C
+participant "Locale Middleware" as M
+
+User -> UI: اختيار لغة
+UI -> C: طلب تغيير locale
+C --> UI: redirect back
+UI -> M: تحميل الصفحة
+M --> UI: تطبيق locale
+UI --> User: واجهة مترجمة
+@enduml

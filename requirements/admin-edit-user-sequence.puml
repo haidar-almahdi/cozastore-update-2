@@ -1,0 +1,29 @@
+@startuml Admin Edit User - Sequence Diagram
+
+actor Admin
+participant "UserController" as UserCtrl
+participant "User" as User
+participant "View" as View
+
+== Show Edit Form ==
+Admin -> UserCtrl: edit(user)
+UserCtrl -> User: find(id)
+User --> UserCtrl: user
+UserCtrl -> View: show admin.users.edit(user)
+View --> Admin: display edit form
+
+== Update User ==
+Admin -> UserCtrl: update(request, user)
+UserCtrl -> UserCtrl: validate(request)
+
+alt Validation fails
+    UserCtrl -> View: redirect with errors
+    View --> Admin: show validation errors
+else Validation passes
+    UserCtrl -> User: update()
+    User --> UserCtrl: user_updated
+    UserCtrl -> View: redirect to users.index
+    View --> Admin: show "User updated successfully"
+end
+
+@enduml

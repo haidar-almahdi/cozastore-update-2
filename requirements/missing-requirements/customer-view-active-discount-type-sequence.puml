@@ -1,0 +1,13 @@
+@startuml
+actor Customer
+participant "Products/Details View" as View
+participant "Product Model" as Product
+
+Customer -> View: Open page
+View -> Product: has_active_discount
+View -> Product: effective_discount_percentage
+View -> Product: isBlackFridayActive()
+View -> Product: isQuickOfferActive()
+Product --> View: discount data
+View --> Customer: Render price + discount type badge
+@enduml

@@ -1,0 +1,86 @@
+@startuml CozaStore Use Case Diagram - High Level (Arabic)
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+skinparam actor {
+    BackgroundColor White
+    BorderColor Black
+}
+skinparam nodesep 60
+skinparam ranksep 70
+
+' Actors — مطابقة لأدوار users.role في الكود
+actor "زائر" as Guest
+actor "الزبون" as Customer
+actor "مدير النظام" as Admin
+actor "السائق" as Driver
+
+' الوراثة: الزبون يرث صلاحيات الزائر
+Customer --|> Guest
+
+rectangle "نظام متجر CozaStore" {
+
+    package "الميزات العامة" {
+        usecase "تصفح والبحث عن المنتجات" as UC_Browse
+        usecase "التسجيل والدخول" as UC_Auth
+        usecase "عرض الصفحات والعروض" as UC_Static
+        usecase "المساعد الذكي للتسوق" as UC_AI
+    }
+
+    package "ميزات الزبون" {
+        usecase "إدارة سلة التسوق" as UC_Cart
+        usecase "إنشاء وإدارة الطلبات" as UC_Order
+        usecase "إدارة الملف الشخصي والمفضلة" as UC_Profile
+        usecase "التفاعل (تقييم / تعليق)" as UC_Interact
+        usecase "نقاط الولاء والمحفظة" as UC_Loyalty
+        usecase "مراسلة المتجر" as UC_Contact
+    }
+
+    package "ميزات المدير" {
+        usecase "إدارة المنتجات والفئات" as UC_ManageProducts
+        usecase "إدارة العروض والخصومات" as UC_ManageOffers
+        usecase "إدارة الطلبات" as UC_ManageOrders
+        usecase "إدارة المستخدمين والسائقين" as UC_ManageUsers
+        usecase "إدارة دليل المقاسات" as UC_SizeGuides
+        usecase "إدارة الرسائل والولاء" as UC_ManageMessages
+        usecase "عرض لوحة التحكم" as UC_Dashboard
+    }
+
+    package "ميزات السائق" {
+        usecase "استلام وتسليم الطلبات" as UC_DriverOrders
+    }
+}
+
+' Relationships — Guest
+Guest --> UC_Browse
+Guest --> UC_Auth
+Guest --> UC_Static
+Guest --> UC_AI
+
+' Relationships — Customer
+Customer --> UC_Cart
+Customer --> UC_Order
+Customer --> UC_Profile
+Customer --> UC_Interact
+Customer --> UC_Loyalty
+Customer --> UC_Contact
+
+' Relationships — Admin
+Admin --> UC_ManageProducts
+Admin --> UC_ManageOffers
+Admin --> UC_ManageOrders
+Admin --> UC_ManageUsers
+Admin --> UC_SizeGuides
+Admin --> UC_ManageMessages
+Admin --> UC_Dashboard
+
+' Relationships — Driver
+Driver --> UC_DriverOrders
+
+@enduml

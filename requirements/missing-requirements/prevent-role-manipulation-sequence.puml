@@ -1,0 +1,17 @@
+@startuml
+actor User
+participant Middleware
+participant Controller
+database DB
+
+User -> Middleware: إرسال طلب update
+Middleware -> Middleware: فحص role في الطلب
+alt تعديل role غير مسموح
+  Middleware --> User: 403 / رفض
+else مسموح
+  Middleware -> Controller: متابعة الطلب
+  Controller -> DB: update
+  DB --> Controller: success
+  Controller --> User: success
+end
+@enduml

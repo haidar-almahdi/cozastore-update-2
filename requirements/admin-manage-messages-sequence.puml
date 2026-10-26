@@ -1,0 +1,35 @@
+@startuml Admin Manage Messages - Sequence Diagram
+
+actor Admin
+participant "MessageController" as MsgCtrl
+participant "ContactMessage" as Message
+participant "MessageReply" as Reply
+participant "View" as View
+
+== View Messages ==
+Admin -> MsgCtrl: index()
+MsgCtrl -> Message: orderBy(created_at, desc)->get()
+Message --> MsgCtrl: messages
+MsgCtrl -> View: show admin.messages.index(messages)
+View --> Admin: display messages list
+
+== View Message Details ==
+Admin -> MsgCtrl: show(message)
+MsgCtrl -> Message: find(id)
+Message --> MsgCtrl: message
+MsgCtrl -> Message: markAsRead()
+Message --> MsgCtrl: marked_read
+MsgCtrl -> Reply: where(contact_message_id)->get()
+Reply --> MsgCtrl: replies
+MsgCtrl -> View: show admin.messages.show(message, replies)
+View --> Admin: display message details
+
+== Reply to Message ==
+Admin -> MsgCtrl: reply(request, message)
+MsgCtrl -> MsgCtrl: validate(request)
+MsgCtrl -> Reply: create()
+Reply --> MsgCtrl: reply_created
+MsgCtrl -> View: redirect with success
+View --> Admin: show "Reply sent successfully"
+
+@enduml

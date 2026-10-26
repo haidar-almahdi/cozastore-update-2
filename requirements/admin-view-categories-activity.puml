@@ -1,0 +1,23 @@
+@startuml
+title عرض الفئات (View Categories)
+|Admin|
+start
+:النقر على رابط "إدارة الفئات";
+
+|Controller (CategoryController)|
+:استقبال طلب GET /admin/categories;
+:جلب الفئات من قاعدة البيانات (Category::with('products')->latest()->get());
+:حساب إجمالي عدد الفئات (Category::count());
+:حساب إجمالي عدد المنتجات (Product::count());
+:حساب الفئات النشطة وغير النشطة;
+:تحديد الفئة الأكثر احتواءً على منتجات;
+:إرجاع عرض 'admin.categories.index' مع البيانات;
+
+|View (admin.categories.index)|
+:عرض بطاقات الإحصائيات;
+:عرض جدول الفئات;
+:عرض أزرار التحكم (تعديل، حذف);
+
+|Admin|
+stop
+@enduml

@@ -1,0 +1,37 @@
+@startuml Admin Edit Product - Sequence Diagram
+
+actor Admin
+participant "ProductController" as ProductCtrl
+participant "Product" as Product
+participant "Storage" as Storage
+participant "Category" as Category
+participant "View" as View
+
+== Show Edit Form ==
+Admin -> ProductCtrl: edit(product)
+ProductCtrl -> Product: find(id)
+Product --> ProductCtrl: product
+ProductCtrl -> Category: all()
+Category --> ProductCtrl: categories
+ProductCtrl -> View: show admin.products.edit(product, categories)
+View --> Admin: display edit form
+
+== Update Product ==
+Admin -> ProductCtrl: update(request, product)
+ProductCtrl -> ProductCtrl: validate(request)
+
+alt Validation fails
+    ProductCtrl -> View: redirect with errors
+    View --> Admin: show validation errors
+else Validation passes
+    alt Has new image
+        ProductCtrl -> Storage: store(image)
+        Storage --> ProductCtrl: image_path
+    end
+    ProductCtrl -> Product: update()
+    Product --> ProductCtrl: product_updated
+    ProductCtrl -> View: redirect to products.index
+    View --> Admin: show "Product updated successfully"
+end
+
+@enduml

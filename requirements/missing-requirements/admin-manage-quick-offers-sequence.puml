@@ -1,0 +1,16 @@
+@startuml
+actor Admin
+participant "Quick Offers View" as View
+participant "QuickOfferController" as Controller
+participant "Product Model" as Product
+database DB
+
+Admin -> View: Edit quick offer values
+Admin -> Controller: PATCH /admin/offers/quick/{product}
+Controller -> Controller: Validate request
+Controller -> Product: update(quick offer fields)
+Product -> DB: UPDATE products
+DB --> Product: OK
+Product --> Controller: Updated
+Controller --> View: Redirect with success
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+start
+:Receive quick offer update request;
+:Read quick_offer_percentage;
+if (percentage > 0?) then (Yes)
+  :Set quick_offer_enabled = true;
+else (No)
+  :Use submitted enabled value;
+endif
+:Save product fields;
+stop
+@enduml

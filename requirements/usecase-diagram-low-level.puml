@@ -1,0 +1,153 @@
+@startuml CozaStore Use Case Diagram - Low Level (English)
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+skinparam nodesep 80
+skinparam ranksep 80
+
+' Actors
+actor "Admin" as Admin
+actor "Customer" as Customer
+actor "Guest" as Guest
+
+' Inheritance
+Customer --|> Guest
+Admin --|> Customer
+
+rectangle "CozaStore System" {
+
+    package "Public Features" {
+        usecase "Browse Products" as UC_BrowseProducts
+        usecase "Search Products" as UC_SearchProducts
+        usecase "View Product Details" as UC_ViewProduct
+        usecase "Filter Products by Category" as UC_FilterProducts
+        usecase "Register" as UC_Register
+        usecase "Login" as UC_Login
+        usecase "Logout" as UC_Logout
+    }
+
+    package "Shopping Cart" {
+        usecase "Add to Cart" as UC_AddToCart
+        usecase "View Cart" as UC_ViewCart
+        usecase "Update Cart Item" as UC_UpdateCartItem
+        usecase "Remove from Cart" as UC_RemoveFromCart
+        usecase "Clear Cart" as UC_ClearCart
+    }
+
+    package "Order Management" {
+        usecase "Place Order" as UC_PlaceOrder
+        usecase "View My Orders" as UC_ViewMyOrders
+        usecase "View Order Details" as UC_ViewOrderDetails
+        usecase "Cancel Order" as UC_CancelOrder
+    }
+
+    package "Profile & Favorites" {
+        usecase "View Profile" as UC_ViewProfile
+        usecase "Edit Profile" as UC_EditProfile
+        usecase "View Favorites List" as UC_ViewFavoritesList
+        usecase "Add to Favorites" as UC_AddToFavorites
+        usecase "Remove from Favorites" as UC_RemoveFromFavorites
+    }
+
+    package "Messages" {
+        usecase "Contact Admin" as UC_ContactAdmin
+        usecase "View My Messages" as UC_ViewMyMessages
+        usecase "View Message Details" as UC_ViewMessageDetails
+    }
+
+    package "Admin - Product Management" {
+        usecase "View All Products" as UC_AdminViewProducts
+        usecase "Add Product" as UC_AdminAddProduct
+        usecase "Edit Product" as UC_AdminEditProduct
+        usecase "Delete Product" as UC_AdminDeleteProduct
+    }
+
+    package "Admin - Category Management" {
+        usecase "View Categories" as UC_ViewCategories
+        usecase "Add Category" as UC_AddCategory
+        usecase "Edit Category" as UC_EditCategory
+        usecase "Delete Category" as UC_DeleteCategory
+    }
+
+    package "Admin - User Management" {
+        usecase "View All Users" as UC_AdminViewUsers
+        usecase "Add User" as UC_AdminAddUser
+        usecase "Edit User" as UC_AdminEditUser
+        usecase "Delete User" as UC_AdminDeleteUser
+        usecase "Register New Admin" as UC_RegisterAdmin
+    }
+
+    package "Admin - Order Management" {
+        usecase "View All Orders" as UC_ViewAllOrders
+        usecase "Update Order Status" as UC_UpdateOrderStatus
+    }
+
+    package "Admin - Message Management" {
+        usecase "View All Messages" as UC_ViewAllMessages
+        usecase "Reply to Message" as UC_ReplyToMessage
+    }
+}
+
+' Layout Hints
+Customer -[hidden]d- Guest
+
+' Relationships - Admin (Left side -> Use Cases)
+Admin --> UC_AdminViewProducts
+Admin --> UC_AdminAddProduct
+Admin --> UC_AdminEditProduct
+Admin --> UC_AdminDeleteProduct
+Admin --> UC_ViewCategories
+Admin --> UC_AddCategory
+Admin --> UC_EditCategory
+Admin --> UC_DeleteCategory
+Admin --> UC_AdminViewUsers
+Admin --> UC_AdminAddUser
+Admin --> UC_AdminEditUser
+Admin --> UC_AdminDeleteUser
+Admin --> UC_RegisterAdmin
+Admin --> UC_ViewAllOrders
+Admin --> UC_UpdateOrderStatus
+Admin --> UC_ViewAllMessages
+Admin --> UC_ReplyToMessage
+
+' Relationships - Guest (Use Cases <- Right side)
+UC_BrowseProducts <-- Guest
+UC_SearchProducts <-- Guest
+UC_ViewProduct <-- Guest
+UC_FilterProducts <-- Guest
+UC_Register <-- Guest
+UC_Login <-- Guest
+
+' Relationships - Customer (Use Cases <- Right side)
+UC_AddToCart <-- Customer
+UC_ViewCart <-- Customer
+UC_UpdateCartItem <-- Customer
+UC_RemoveFromCart <-- Customer
+UC_ClearCart <-- Customer
+UC_PlaceOrder <-- Customer
+UC_ViewMyOrders <-- Customer
+UC_ViewOrderDetails <-- Customer
+UC_CancelOrder <-- Customer
+UC_ViewProfile <-- Customer
+UC_EditProfile <-- Customer
+UC_Logout <-- Customer
+UC_ViewFavoritesList <-- Customer
+UC_AddToFavorites <-- Customer
+UC_RemoveFromFavorites <-- Customer
+UC_ContactAdmin <-- Customer
+UC_ViewMyMessages <-- Customer
+UC_ViewMessageDetails <-- Customer
+
+' Includes / Extends
+UC_PlaceOrder ..> UC_Login : <<include>>
+UC_AddToCart ..> UC_Login : <<include>>
+UC_AddToFavorites ..> UC_Login : <<include>>
+UC_ViewOrderDetails ..> UC_ViewMyOrders : <<extend>>
+UC_ViewMessageDetails ..> UC_ViewMyMessages : <<extend>>
+
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+actor Admin
+participant UI
+participant "Admin UserController" as C
+database DB
+
+Admin -> UI: click edit user
+UI -> C: GET /admin/users/{id}/edit
+C -> DB: fetch user
+DB --> C: user
+C --> UI: render edit form
+@enduml

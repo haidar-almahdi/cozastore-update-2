@@ -1,0 +1,15 @@
+@startuml Admin View Products - Sequence Diagram
+
+actor Admin
+participant "ProductController" as ProductCtrl
+participant "Product" as Product
+participant "View" as View
+
+== View Products ==
+Admin -> ProductCtrl: index()
+ProductCtrl -> Product: with(category)->get()
+Product --> ProductCtrl: products
+ProductCtrl -> View: show admin.products.index(products)
+View --> Admin: display products list
+
+@enduml

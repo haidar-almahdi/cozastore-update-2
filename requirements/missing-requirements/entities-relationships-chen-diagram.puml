@@ -1,0 +1,74 @@
+@startuml CozaStore Entities-Relationships (Chen)
+skinparam class {
+  BackgroundColor<<entity>> #DDEEFF
+  BackgroundColor<<relationship>> #FFF2A8
+  BorderColor Black
+}
+
+class User <<entity>>
+class Product <<entity>>
+class Category <<entity>>
+class Cart <<entity>>
+class CartItem <<entity>>
+class Order <<entity>>
+class OrderItem <<entity>>
+class Favorite <<entity>>
+class ProductComment <<entity>>
+class ProductRating <<entity>>
+class ContactMessage <<entity>>
+class MessageReply <<entity>>
+class LoyaltyPointTransaction <<entity>>
+class SizeGuide <<entity>>
+class SiteSetting <<entity>>
+
+class Places <<relationship>>
+class Has <<relationship>>
+class Contains <<relationship>>
+class Includes <<relationship>>
+class BelongsTo <<relationship>>
+class FavoritesRel <<relationship>>
+class CommentsOn <<relationship>>
+class RatesRel <<relationship>>
+class Sends <<relationship>>
+class RepliesTo <<relationship>>
+class Earns <<relationship>>
+class Uses <<relationship>>
+
+User "1" -- "N" Places
+Places "N" -- "1" Order
+
+User "1" -- "N" Has
+Has "N" -- "1" Cart
+
+Category "1" -- "N" BelongsTo
+BelongsTo "N" -- "1" Product
+
+Cart "1" -- "N" Contains
+Contains "N" -- "1" CartItem
+
+Order "1" -- "N" Includes
+Includes "N" -- "1" OrderItem
+
+User "1" -- "N" FavoritesRel
+FavoritesRel "N" -- "1" Product
+
+User "1" -- "N" CommentsOn
+CommentsOn "N" -- "1" ProductComment
+ProductComment "N" -- "1" Product
+
+User "1" -- "N" RatesRel
+RatesRel "N" -- "1" ProductRating
+ProductRating "N" -- "1" Product
+
+User "1" -- "N" Sends
+Sends "N" -- "1" ContactMessage
+
+ContactMessage "1" -- "N" RepliesTo
+RepliesTo "N" -- "1" MessageReply
+
+User "1" -- "N" Earns
+Earns "N" -- "1" LoyaltyPointTransaction
+
+Product "N" -- "1" Uses
+Uses "1" -- "N" SizeGuide
+@enduml

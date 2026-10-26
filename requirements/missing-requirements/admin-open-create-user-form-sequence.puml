@@ -1,0 +1,9 @@
+@startuml
+actor Admin
+participant UI
+participant "Admin UserController" as C
+
+Admin -> UI: ضغط إضافة مستخدم
+UI -> C: GET /admin/users/create
+C --> UI: render create form
+@enduml

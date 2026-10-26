@@ -1,0 +1,20 @@
+@startuml Use Case Low Level - Driver
+left to right direction
+actor Driver
+
+rectangle "Driver System" {
+  usecase "View Available Orders" as D1
+  usecase "Accept Order" as D2
+  usecase "View My Active Orders" as D3
+  usecase "View Order Details" as D4
+  usecase "Mark Order Delivered" as D5
+}
+
+Driver --> D1
+Driver --> D2
+Driver --> D3
+Driver --> D4
+Driver --> D5
+
+D5 ..> D3 : <<extend>>
+@enduml

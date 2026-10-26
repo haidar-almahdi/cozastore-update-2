@@ -1,0 +1,171 @@
+@startuml CozaStore Use Case Diagram - Low Level (Arabic)
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+skinparam actor {
+    BackgroundColor White
+    BorderColor Black
+}
+skinparam nodesep 40
+skinparam ranksep 50
+
+' Actors
+actor "زائر" as Guest
+actor "الزبون" as Customer
+actor "مدير النظام" as Admin
+actor "السائق" as Driver
+
+Customer --|> Guest
+
+rectangle "نظام متجر CozaStore" {
+
+    package "التصفح والبحث" {
+        usecase "تصفح المنتجات" as UC_BrowseProducts
+        usecase "البحث عن المنتجات" as UC_SearchProducts
+        usecase "عرض تفاصيل المنتج" as UC_ViewProduct
+        usecase "عرض دليل المقاسات" as UC_ViewSizeGuide
+        usecase "عرض عروض الجمعة السوداء" as UC_BlackFriday
+        usecase "المحادثة مع المساعد الذكي" as UC_AIChat
+        usecase "عرض صفحة من نحن / اتصل بنا" as UC_StaticPages
+    }
+
+    package "المصادقة" {
+        usecase "تسجيل حساب جديد" as UC_Register
+        usecase "تسجيل الدخول" as UC_Login
+        usecase "تسجيل الخروج" as UC_Logout
+    }
+
+    package "سلة التسوق" {
+        usecase "إضافة للسلة" as UC_AddToCart
+        usecase "عرض السلة" as UC_ViewCart
+        usecase "تحديث عنصر في السلة" as UC_UpdateCartItem
+        usecase "حذف من السلة" as UC_RemoveFromCart
+        usecase "إفراغ السلة" as UC_ClearCart
+    }
+
+    package "الطلبات والدفع" {
+        usecase "إتمام الشراء (Checkout)" as UC_Checkout
+        usecase "إنشاء طلب" as UC_PlaceOrder
+        usecase "عرض طلباتي" as UC_ViewMyOrders
+        usecase "عرض تفاصيل الطلب" as UC_ViewOrderDetails
+        usecase "إلغاء الطلب" as UC_CancelOrder
+    }
+
+    package "الملف الشخصي والمفضلة" {
+        usecase "تعديل الملف الشخصي" as UC_EditProfile
+        usecase "عرض قائمة المفضلة" as UC_ViewFavorites
+        usecase "إضافة / إزالة من المفضلة" as UC_ToggleFavorite
+        usecase "إضافة تعليق على منتج" as UC_Comment
+        usecase "تقييم منتج" as UC_Rate
+        usecase "عرض نقاط الولاء" as UC_MyPoints
+    }
+
+    package "الرسائل" {
+        usecase "إرسال رسالة للإدارة" as UC_ContactAdmin
+        usecase "عرض رسائلي" as UC_ViewMyMessages
+        usecase "عرض تفاصيل الرسالة" as UC_ViewMessageDetails
+    }
+
+    package "المدير - المنتجات والفئات" {
+        usecase "إدارة المنتجات (CRUD)" as UC_AdminProducts
+        usecase "إدارة الفئات (CRUD)" as UC_AdminCategories
+        usecase "إدارة العروض السريعة" as UC_QuickOffers
+        usecase "إعدادات الخصومات والجمعة السوداء" as UC_DiscountSettings
+    }
+
+    package "المدير - الطلبات والمستخدمون" {
+        usecase "عرض وتحديث الطلبات" as UC_AdminOrders
+        usecase "تصدير الطلبات" as UC_ExportOrders
+        usecase "إدارة المستخدمين (CRUD)" as UC_AdminUsers
+        usecase "إنشاء حساب سائق" as UC_CreateDriver
+        usecase "تسجيل مدير جديد" as UC_RegisterAdmin
+    }
+
+    package "المدير - أخرى" {
+        usecase "عرض لوحة التحكم" as UC_Dashboard
+        usecase "إدارة الرسائل والرد عليها" as UC_AdminMessages
+        usecase "عرض نقاط الولاء للمستخدمين" as UC_AdminLoyalty
+        usecase "إدارة دليل المقاسات" as UC_AdminSizeGuides
+    }
+
+    package "السائق" {
+        usecase "عرض الطلبات المتاحة" as UC_DriverViewOrders
+        usecase "قبول طلب للتوصيل" as UC_DriverAccept
+        usecase "تأكيد تسليم الطلب" as UC_DriverDeliver
+    }
+}
+
+' Guest
+Guest --> UC_BrowseProducts
+Guest --> UC_SearchProducts
+Guest --> UC_ViewProduct
+Guest --> UC_ViewSizeGuide
+Guest --> UC_BlackFriday
+Guest --> UC_AIChat
+Guest --> UC_StaticPages
+Guest --> UC_Register
+Guest --> UC_Login
+Guest --> UC_ContactAdmin
+
+' Customer
+Customer --> UC_AddToCart
+Customer --> UC_ViewCart
+Customer --> UC_UpdateCartItem
+Customer --> UC_RemoveFromCart
+Customer --> UC_ClearCart
+Customer --> UC_Checkout
+Customer --> UC_PlaceOrder
+Customer --> UC_ViewMyOrders
+Customer --> UC_ViewOrderDetails
+Customer --> UC_CancelOrder
+Customer --> UC_EditProfile
+Customer --> UC_Logout
+Customer --> UC_ViewFavorites
+Customer --> UC_ToggleFavorite
+Customer --> UC_Comment
+Customer --> UC_Rate
+Customer --> UC_MyPoints
+Customer --> UC_ViewMyMessages
+Customer --> UC_ViewMessageDetails
+
+' Admin
+Admin --> UC_Dashboard
+Admin --> UC_AdminProducts
+Admin --> UC_AdminCategories
+Admin --> UC_QuickOffers
+Admin --> UC_DiscountSettings
+Admin --> UC_AdminOrders
+Admin --> UC_ExportOrders
+Admin --> UC_AdminUsers
+Admin --> UC_CreateDriver
+Admin --> UC_RegisterAdmin
+Admin --> UC_AdminMessages
+Admin --> UC_AdminLoyalty
+Admin --> UC_AdminSizeGuides
+Admin --> UC_Logout
+
+' Driver
+Driver --> UC_DriverViewOrders
+Driver --> UC_DriverAccept
+Driver --> UC_DriverDeliver
+Driver --> UC_Logout
+
+' Includes / Extends — مطابقة لـ middleware auth في الكود
+UC_AddToCart ..> UC_Login : <<include>>
+UC_Checkout ..> UC_Login : <<include>>
+UC_PlaceOrder ..> UC_Checkout : <<include>>
+UC_ToggleFavorite ..> UC_Login : <<include>>
+UC_Comment ..> UC_Login : <<include>>
+UC_Rate ..> UC_Login : <<include>>
+UC_ViewOrderDetails ..> UC_ViewMyOrders : <<extend>>
+UC_ViewMessageDetails ..> UC_ViewMyMessages : <<extend>>
+UC_DriverAccept ..> UC_DriverViewOrders : <<extend>>
+UC_DriverDeliver ..> UC_DriverViewOrders : <<extend>>
+
+@enduml

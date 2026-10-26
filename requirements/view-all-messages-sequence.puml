@@ -1,0 +1,19 @@
+@startuml View All Messages - Sequence Diagram
+
+actor Admin
+participant "ContactMessageController" as MsgCtrl
+participant "ContactMessage" as Message
+participant "MessageReply" as Reply
+participant "View" as View
+
+== View All Messages ==
+Admin -> MsgCtrl: index()
+MsgCtrl -> MsgCtrl: checkAdminPermission()
+MsgCtrl -> Message: withCount('replies')->orderBy('created_at', 'desc')->get()
+Message --> MsgCtrl: messages
+MsgCtrl -> Message: where('is_read', false)->count()
+Message --> MsgCtrl: unread_count
+MsgCtrl -> View: show admin.messages.index(messages, unread_count)
+View --> Admin: display messages list
+
+@enduml

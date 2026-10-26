@@ -1,0 +1,13 @@
+@startuml
+actor Admin
+participant "Quick Offers Row" as Row
+participant "QuickOfferController" as Controller
+database DB
+
+Admin -> Row: Edit row inputs
+Admin -> Row: Click Save
+Row -> Controller: PATCH with row form fields
+Controller -> DB: Update target product
+DB --> Controller: OK
+Controller --> Row: Redirect + flash success
+@enduml

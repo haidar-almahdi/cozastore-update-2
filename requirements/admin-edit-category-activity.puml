@@ -1,0 +1,47 @@
+@startuml
+title تعديل فئة (Edit Category)
+|Admin|
+start
+:النقر على زر "تعديل" لفئة محددة;
+
+|Controller (CategoryController)|
+:استقبال طلب GET /admin/categories/{id}/edit;
+:جلب بيانات الفئة (Category::find($id));
+:إرجاع عرض 'admin.categories.edit' مع البيانات;
+
+|View (admin.categories.edit)|
+:عرض نموذج التعديل مع البيانات الحالية;
+
+|Admin|
+:تعديل البيانات (الاسم، الوصف، الصورة، الحالة);
+:النقر على زر "تحديث";
+
+|Controller (CategoryController)|
+:استقبال طلب PUT /admin/categories/{id};
+:التحقق من صحة البيانات (Validation);
+if (البيانات صالحة؟) then (نعم)
+    :تحديث الـ Slug (Str::slug($name));
+    if (تم رفع صورة جديدة؟) then (نعم)
+        :التحقق من صيغة الصورة;
+        if (الصيغة صحيحة؟) then (نعم)
+            :حذف الصورة القديمة (إذا وجدت);
+            :حفظ الصورة الجديدة;
+            :تحديث مسار الصورة في البيانات;
+        else (لا)
+            :إرجاع خطأ (صيغة غير مدعومة);
+            stop
+        endif
+    endif
+    :تحديث الفئة في قاعدة البيانات ($category->update($data));
+    :إعادة التوجيه إلى 'admin.categories.index';
+    :عرض رسالة نجاح;
+else (لا)
+    :إعادة التوجيه للخلف مع الأخطاء;
+endif
+
+|View (admin.categories.edit)|
+:عرض الأخطاء (إذا وجدت);
+
+|Admin|
+stop
+@enduml

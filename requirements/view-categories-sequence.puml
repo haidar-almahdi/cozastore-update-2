@@ -1,0 +1,17 @@
+@startuml View Categories - Sequence Diagram
+
+actor Admin
+participant "CategoryController" as CatCtrl
+participant "Category" as Category
+participant "Product" as Product
+participant "View" as View
+
+== View Categories ==
+Admin -> CatCtrl: index()
+CatCtrl -> CatCtrl: checkAdminPermission()
+CatCtrl -> Category: withCount('products')->get()
+Category --> CatCtrl: categories
+CatCtrl -> View: show admin.categories.index(categories)
+View --> Admin: display categories list
+
+@enduml

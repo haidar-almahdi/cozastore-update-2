@@ -1,0 +1,38 @@
+@startuml Login - Sequence Diagram
+
+actor User
+participant "LoginController" as LoginCtrl
+participant "Auth" as Auth
+participant "User" as UserModel
+participant "View" as View
+
+== Show Login Form ==
+User -> LoginCtrl: create()
+LoginCtrl -> View: show login
+View --> User: display login form
+
+== Login ==
+User -> LoginCtrl: store(request)
+LoginCtrl -> LoginCtrl: validate(request)
+
+alt Validation fails
+    LoginCtrl -> View: redirect with errors
+    View --> User: show validation errors
+else Validation passes
+    LoginCtrl -> Auth: attempt(credentials, remember)
+    Auth -> UserModel: where(email)->first()
+    UserModel --> Auth: user
+    Auth -> Auth: check password
+
+    alt Credentials invalid
+        Auth --> LoginCtrl: false
+        LoginCtrl -> View: redirect with error
+        View --> User: show "Invalid credentials"
+    else Credentials valid
+        Auth --> LoginCtrl: true
+        LoginCtrl -> View: redirect to intended
+        View --> User: display requested page
+    end
+end
+
+@enduml

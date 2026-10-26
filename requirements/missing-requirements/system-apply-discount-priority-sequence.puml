@@ -1,0 +1,11 @@
+@startuml
+participant "Shop View" as View
+participant "Product Model" as Product
+
+View -> Product: current_price
+Product -> Product: getEffectiveDiscountPercentageAttribute()
+Product -> Product: isBlackFridayActive()
+Product -> Product: isQuickOfferActive()
+Product -> Product: isManualDiscountActive()
+Product --> View: final current_price
+@enduml

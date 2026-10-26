@@ -1,0 +1,11 @@
+@startuml
+actor Admin
+participant Browser
+participant "Admin Layout (CSS/JS)" as UI
+
+Admin -> Browser: Open dashboard
+Browser -> UI: Render sidebar with overflow-y
+Admin -> Browser: Click hide/show toggle
+Browser -> UI: Toggle sidebar-collapsed class
+UI --> Browser: Update sidebar and main-content layout
+@enduml

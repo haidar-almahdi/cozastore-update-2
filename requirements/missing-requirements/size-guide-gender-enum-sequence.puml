@@ -1,0 +1,17 @@
+@startuml
+actor Admin
+participant "Size Guide UI" as UI
+participant "SizeGuideController" as C
+database DB
+
+Admin -> UI: إدخال بيانات الدليل
+UI -> C: POST/PUT size guide
+C -> C: validate gender enum
+alt valid
+  C -> DB: save
+  DB --> C: success
+  C --> UI: success
+else invalid
+  C --> UI: validation error
+end
+@enduml

@@ -1,0 +1,42 @@
+@startuml Manage Favorites - Sequence Diagram
+
+actor Customer
+participant "FavoriteController" as FavCtrl
+participant "Product" as Product
+participant "Favorite" as Favorite
+participant "View" as View
+
+== View Favorites ==
+Customer -> FavCtrl: index()
+FavCtrl -> Favorite: where(user_id)->with(product)
+Favorite --> FavCtrl: favorites
+FavCtrl -> View: show favorites.index(favorites)
+View --> Customer: display favorites list
+
+== Toggle Favorite ==
+Customer -> FavCtrl: toggle(product_id)
+FavCtrl -> Product: find(product_id)
+Product --> FavCtrl: product
+FavCtrl -> Favorite: where(user_id, product_id)->first()
+Favorite --> FavCtrl: existing
+
+alt Favorite exists
+    FavCtrl -> Favorite: delete()
+    Favorite --> FavCtrl: deleted
+    FavCtrl -> View: return JSON(status: removed)
+else Not favorited
+    FavCtrl -> Favorite: create()
+    Favorite --> FavCtrl: created
+    FavCtrl -> View: return JSON(status: added)
+end
+
+View --> Customer: update heart icon
+
+== Remove from Favorites ==
+Customer -> FavCtrl: destroy(product)
+FavCtrl -> Favorite: where(user_id, product_id)->delete()
+Favorite --> FavCtrl: deleted
+FavCtrl -> View: redirect with success
+View --> Customer: display success message
+
+@enduml

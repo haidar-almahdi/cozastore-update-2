@@ -1,0 +1,15 @@
+@startuml
+start
+:Load product discount context;
+if (Black Friday active?) then (Yes)
+  :Use Black Friday percentage;
+else (No)
+  if (Quick Offer active?) then (Yes)
+    :Use Quick Offer percentage;
+  else (No)
+    :Use Manual Discount if active;
+  endif
+endif
+:Compute current_price;
+stop
+@enduml

@@ -1,0 +1,43 @@
+@startuml Add to Cart - Sequence Diagram
+
+actor Customer
+participant "ProductController" as ProductCtrl
+participant "CartController" as CartCtrl
+participant "Product" as Product
+participant "Cart" as Cart
+participant "CartItem" as CartItem
+participant "View" as View
+
+== View Product ==
+Customer -> ProductCtrl: show(product)
+ProductCtrl -> Product: find(id)
+Product --> ProductCtrl: product
+ProductCtrl -> View: show product.show(product)
+View --> Customer: display product details
+
+== Add to Cart ==
+Customer -> CartCtrl: store(request)
+CartCtrl -> CartCtrl: validate(request)
+CartCtrl -> Product: find(product_id)
+Product --> CartCtrl: product
+CartCtrl -> Product: checkStock(quantity)
+Product --> CartCtrl: available
+CartCtrl -> Cart: getActiveCart()
+Cart --> CartCtrl: cart
+CartCtrl -> CartItem: findExisting(product, size, color)
+CartItem --> CartCtrl: existing_item
+
+alt Item exists
+    CartCtrl -> CartItem: update(quantity)
+    CartItem --> CartCtrl: updated
+else New item
+    CartCtrl -> CartItem: create()
+    CartItem --> CartCtrl: created
+end
+
+CartCtrl -> Cart: getItemCount()
+Cart --> CartCtrl: count
+CartCtrl -> View: redirect with success
+View --> Customer: display success message
+
+@enduml

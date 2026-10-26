@@ -1,0 +1,160 @@
+@startuml CozaStore Database Schema
+hide circle
+skinparam linetype ortho
+
+entity "users" as users {
+  *id : bigint <<PK>>
+  --
+  name : varchar
+  email : varchar <<UNIQUE>>
+  role : enum(admin,customer,driver)
+  wallet_balance : decimal
+  loyalty_points_balance : int
+}
+
+entity "categories" as categories {
+  *id : bigint <<PK>>
+  --
+  name : varchar
+  slug : varchar <<UNIQUE>>
+  is_active : bool
+}
+
+entity "products" as products {
+  *id : bigint <<PK>>
+  --
+  category_id : bigint <<FK>>
+  name : varchar
+  slug : varchar <<UNIQUE>>
+  price : decimal
+  stock : int
+  discount_percentage : tinyint
+  discount_starts_at : timestamp
+  discount_ends_at : timestamp
+  black_friday_enabled : bool
+  quick_offer_enabled : bool
+  quick_offer_percentage : tinyint
+  quick_offer_starts_at : timestamp
+  quick_offer_ends_at : timestamp
+  ai_keywords : json
+}
+
+entity "carts" as carts {
+  *id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  session_id : varchar
+  status : varchar
+}
+
+entity "cart_items" as cart_items {
+  *id : bigint <<PK>>
+  --
+  cart_id : bigint <<FK>>
+  product_id : bigint <<FK>>
+  quantity : int
+  price : decimal
+}
+
+entity "orders" as orders {
+  *id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  driver_id : bigint <<FK nullable>>
+  order_number : varchar <<UNIQUE>>
+  total_amount : decimal
+  status : varchar
+}
+
+entity "order_items" as order_items {
+  *id : bigint <<PK>>
+  --
+  order_id : bigint <<FK>>
+  product_id : bigint <<FK>>
+  quantity : int
+  price : decimal
+}
+
+entity "favorites" as favorites {
+  *id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  product_id : bigint <<FK>>
+}
+
+entity "product_comments" as product_comments {
+  *id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  product_id : bigint <<FK>>
+  content : text
+}
+
+entity "product_ratings" as product_ratings {
+  *id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  product_id : bigint <<FK>>
+  stars : int
+}
+
+entity "contact_messages" as contact_messages {
+  *id : bigint <<PK>>
+  --
+  user_id : bigint <<FK nullable>>
+  subject : varchar
+  message : text
+}
+
+entity "message_replies" as message_replies {
+  *id : bigint <<PK>>
+  --
+  contact_message_id : bigint <<FK>>
+  admin_user_id : bigint <<FK>>
+  reply_message : text
+}
+
+entity "loyalty_point_transactions" as loyalty_point_transactions {
+  *id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  points : int
+  type : varchar
+}
+
+entity "size_guides" as size_guides {
+  *id : bigint <<PK>>
+  --
+  name : varchar
+  scope_type : varchar
+  scope_id : bigint
+}
+
+entity "site_settings" as site_settings {
+  *id : bigint <<PK>>
+  --
+  key : varchar <<UNIQUE>>
+  value : text
+}
+
+users ||--o{ carts
+users ||--o{ orders : customer
+users ||--o{ orders : driver
+users ||--o{ favorites
+users ||--o{ product_comments
+users ||--o{ product_ratings
+users ||--o{ contact_messages
+users ||--o{ message_replies : admin_user_id
+users ||--o{ loyalty_point_transactions
+
+categories ||--o{ products
+products ||--o{ cart_items
+products ||--o{ order_items
+products ||--o{ favorites
+products ||--o{ product_comments
+products ||--o{ product_ratings
+
+carts ||--o{ cart_items
+orders ||--o{ order_items
+contact_messages ||--o{ message_replies
+@enduml

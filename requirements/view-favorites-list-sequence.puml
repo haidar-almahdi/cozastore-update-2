@@ -1,0 +1,14 @@
+@startuml View Favorites List - Sequence Diagram
+
+actor Customer
+participant "FavoriteController" as FavCtrl
+participant "Favorite" as Favorite
+participant "View" as View
+
+Customer -> FavCtrl: index()
+FavCtrl -> Favorite: where(user_id)->with(product)
+Favorite --> FavCtrl: favorites
+FavCtrl -> View: show favorites.index(favorites)
+View --> Customer: display favorites list
+
+@enduml

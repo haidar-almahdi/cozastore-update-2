@@ -1,0 +1,12 @@
+@startuml
+actor User
+participant "Profile UI" as UI
+participant "Profile Controller" as C
+database DB
+
+User -> UI: تعديل gender + حفظ
+UI -> C: PUT /shop/profile
+C -> DB: update users.gender
+DB --> C: success
+C --> UI: success message
+@enduml

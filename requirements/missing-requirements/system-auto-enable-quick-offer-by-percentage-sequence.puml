@@ -1,0 +1,15 @@
+@startuml
+actor Admin
+participant "QuickOfferController" as Controller
+participant "Product Model" as Product
+database DB
+
+Admin -> Controller: Submit quick offer update
+Controller -> Controller: Validate percentage and schedule
+Controller -> Controller: Derive enabled from percentage
+Controller -> Product: update(...)
+Product -> DB: UPDATE products
+DB --> Product: OK
+Product --> Controller: Updated
+Controller --> Admin: Success response
+@enduml

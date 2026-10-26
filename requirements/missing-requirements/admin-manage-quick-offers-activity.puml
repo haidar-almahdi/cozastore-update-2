@@ -1,0 +1,14 @@
+@startuml
+start
+:Admin opens Quick Offers page;
+:Select product row;
+:Set enabled / percentage / start / end;
+:Click Save;
+if (Input valid?) then (Yes)
+  :Update product quick offer fields;
+  :Show success message;
+else (No)
+  :Show validation errors;
+endif
+stop
+@enduml

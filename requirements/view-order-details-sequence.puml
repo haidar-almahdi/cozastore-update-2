@@ -1,0 +1,18 @@
+@startuml View Order Details - Sequence Diagram
+
+actor Customer
+participant "OrderController" as OrderCtrl
+participant "Order" as Order
+participant "OrderItem" as OrderItem
+participant "View" as View
+
+== View Order Details ==
+Customer -> OrderCtrl: show(order)
+OrderCtrl -> Order: find(id)
+Order --> OrderCtrl: order
+OrderCtrl -> OrderItem: where(order_id)->with(product)
+OrderItem --> OrderCtrl: order_items
+OrderCtrl -> View: show orders.show(order, order_items)
+View --> Customer: display order details
+
+@enduml

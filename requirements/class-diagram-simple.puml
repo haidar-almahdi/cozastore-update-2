@@ -1,0 +1,208 @@
+@startuml CozaStore Class Diagram - Simple
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam class {
+    BackgroundColor<<Entity>> #E8F4FC
+    BorderColor Black
+    ArrowColor Black
+}
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+together {
+
+class User <<Entity>> {
+    id : int
+    name : string
+    email : string
+    password : string
+    phone : string
+    address : string
+    gender : string
+    role : string
+    loyalty_points_balance : int
+    wallet_balance : decimal
+    --
+    isAdmin() : bool
+    isCustomer() : bool
+    isDriver() : bool
+    hasFavorited(Product) : bool
+    addToFavorites(Product) : void
+    removeFromFavorites(Product) : void
+}
+
+class Product <<Entity>> {
+    id : int
+    name : string
+    slug : string
+    description : text
+    price : decimal
+    stock : int
+    sizes : array
+    size_stocks : array
+    colors : array
+    image : string
+    is_featured : bool
+    is_active : bool
+    category_id : int
+    discount_percentage : int
+    black_friday_enabled : bool
+    quick_offer_enabled : bool
+    --
+    getCurrentPrice() : float
+    isFavoritedBy(User) : bool
+    isBlackFridayActive() : bool
+    isQuickOfferActive() : bool
+}
+
+class Category <<Entity>> {
+    id : int
+    name : string
+    slug : string
+    description : text
+    image : string
+    is_active : bool
+}
+
+class Cart <<Entity>> {
+    id : int
+    user_id : int
+    session_id : string
+    status : string
+    --
+    addItem() : void
+    updateItem() : bool
+    removeItem() : bool
+    clear() : bool
+    getTotal() : decimal
+}
+
+class CartItem <<Entity>> {
+    id : int
+    cart_id : int
+    product_id : int
+    quantity : int
+    price : decimal
+    size : string
+    color : string
+}
+
+class Order <<Entity>> {
+    id : int
+    user_id : int
+    driver_id : int
+    order_number : string
+    total_amount : decimal
+    status : string
+    shipping_name : string
+    shipping_phone : string
+    shipping_address : text
+    notes : text
+}
+
+class OrderItem <<Entity>> {
+    id : int
+    order_id : int
+    product_id : int
+    quantity : int
+    price : decimal
+    size : string
+    color : string
+}
+
+class Favorite <<Entity>> {
+    id : int
+    user_id : int
+    product_id : int
+}
+
+class ProductComment <<Entity>> {
+    id : int
+    user_id : int
+    product_id : int
+    content : text
+}
+
+class ProductRating <<Entity>> {
+    id : int
+    user_id : int
+    product_id : int
+    stars : int
+}
+
+class ContactMessage <<Entity>> {
+    id : int
+    name : string
+    email : string
+    subject : string
+    message : text
+    is_read : bool
+    --
+    markAsRead() : void
+}
+
+class MessageReply <<Entity>> {
+    id : int
+    contact_message_id : int
+    admin_user_id : int
+    reply_message : text
+    is_read_by_user : bool
+}
+
+class LoyaltyPointTransaction <<Entity>> {
+    id : int
+    user_id : int
+    points : int
+    type : string
+    reference_type : string
+    reference_id : int
+    description : text
+}
+
+class SizeGuide <<Entity>> {
+    id : int
+    name : string
+    scope_type : string
+    scope_id : int
+    gender : string
+    unit : string
+    table_schema : array
+    rows : array
+    is_active : bool
+}
+
+class SiteSetting <<Entity>> {
+    id : int
+    key : string
+    value : string
+    --
+    getValue(key) : mixed
+    setValue(key, value) : void
+}
+
+}
+
+' Relationships (مطابقة لـ Eloquent)
+Category "1" o-- "*" Product : contains
+User "1" o-- "*" Cart : owns
+User "1" o-- "*" Order : places
+User "1" o-- "*" Order : delivers >
+User "1" o-- "*" Favorite : creates
+User "1" o-- "*" ProductComment : writes
+User "1" o-- "*" ProductRating : rates
+User "1" o-- "*" LoyaltyPointTransaction : earns
+
+Cart "1" *-- "*" CartItem : contains
+Order "1" *-- "*" OrderItem : contains
+ContactMessage "1" *-- "*" MessageReply : has
+
+Product "1" -- "*" CartItem
+Product "1" -- "*" OrderItem
+Product "1" -- "*" Favorite
+Product "1" -- "*" ProductComment
+Product "1" -- "*" ProductRating
+
+MessageReply --> User : admin
+
+@enduml

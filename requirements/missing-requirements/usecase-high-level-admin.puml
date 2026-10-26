@@ -1,0 +1,20 @@
+@startuml Use Case High Level - Admin
+left to right direction
+actor Admin
+
+rectangle "Admin Backoffice" {
+  usecase "Manage Catalog" as A1
+  usecase "Manage Promotions" as A2
+  usecase "Manage Orders" as A3
+  usecase "Manage Users & Drivers" as A4
+  usecase "Manage Messages" as A5
+  usecase "Monitor Loyalty" as A6
+}
+
+Admin --> A1
+Admin --> A2
+Admin --> A3
+Admin --> A4
+Admin --> A5
+Admin --> A6
+@enduml

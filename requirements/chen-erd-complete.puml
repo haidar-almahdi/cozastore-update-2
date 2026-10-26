@@ -1,0 +1,90 @@
+@startuml CozaStore Chen ERD - Complete
+
+' Chen Notation Style
+skinparam class {
+    BackgroundColor<<entity>> LightBlue
+    BackgroundColor<<relationship>> Yellow
+    BackgroundColor<<attribute>> LightGreen
+    BorderColor Black
+}
+
+' Entities
+class User <<entity>>
+class Product <<entity>>
+class Category <<entity>>
+class Cart <<entity>>
+class CartItem <<entity>>
+class Order <<entity>>
+class OrderItem <<entity>>
+class Favorite <<entity>>
+class ProductComment <<entity>>
+class ProductRating <<entity>>
+class ContactMessage <<entity>>
+class MessageReply <<entity>>
+class LoyaltyPointTransaction <<entity>>
+class SizeGuide <<entity>>
+
+' Relationships
+class Places <<relationship>>
+class Has <<relationship>>
+class BelongsTo <<relationship>>
+class Contains <<relationship>>
+class Includes <<relationship>>
+class Favorited <<relationship>>
+class Writes <<relationship>>
+class Rates <<relationship>>
+class Replies <<relationship>>
+class Earns <<relationship>>
+class AddedTo <<relationship>>
+class IncludedIn <<relationship>>
+
+' User Relationships
+User "1" -- "N" Places
+Places "N" -- "1" Order
+
+User "1" -- "N" Has
+Has "N" -- "1" Cart
+
+User "1" -- "N" Favorited
+Favorited "N" -- "N" Product
+
+User "1" -- "N" Writes
+Writes "N" -- "1" ProductComment
+
+User "1" -- "N" Rates
+Rates "N" -- "1" ProductRating
+
+User "1" -- "N" Earns
+Earns "N" -- "1" LoyaltyPointTransaction
+
+User "1" -- "N" Replies
+Replies "N" -- "1" MessageReply
+
+' Product Relationships
+Product "N" -- "1" BelongsTo
+BelongsTo "1" -- "1" Category
+
+Product "1" -- "N" AddedTo
+AddedTo "N" -- "1" CartItem
+
+Product "1" -- "N" IncludedIn
+IncludedIn "N" -- "1" OrderItem
+
+' Cart Relationships
+Cart "1" -- "N" Contains
+Contains "N" -- "1" CartItem
+
+' Order Relationships
+Order "1" -- "N" Includes
+Includes "N" -- "1" OrderItem
+
+' Message Relationships
+ContactMessage "1" -- "N" Replies
+
+' Product Comment Relationship
+ProductComment "N" -- "1" Product
+
+' Product Rating Relationship
+ProductRating "N" -- "1" Product
+
+@enduml

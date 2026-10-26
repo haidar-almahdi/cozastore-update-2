@@ -1,0 +1,13 @@
+@startuml
+actor User
+participant UI
+participant "FavoriteController" as C
+database DB
+
+User -> UI: Toggle favorite
+UI -> C: POST /favorites/toggle
+C -> DB: add/remove favorite
+DB --> C: favorites_count
+C --> UI: JSON count
+UI --> User: update header badge
+@enduml

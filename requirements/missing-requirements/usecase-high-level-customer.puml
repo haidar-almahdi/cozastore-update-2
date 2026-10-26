@@ -1,0 +1,18 @@
+@startuml Use Case High Level - Customer
+left to right direction
+actor Customer
+
+rectangle "Customer Experience" {
+  usecase "Explore Store" as C1
+  usecase "Buy Products" as C2
+  usecase "Track Orders" as C3
+  usecase "Manage Profile & Favorites" as C4
+  usecase "Interact With Store" as C5
+}
+
+Customer --> C1
+Customer --> C2
+Customer --> C3
+Customer --> C4
+Customer --> C5
+@enduml

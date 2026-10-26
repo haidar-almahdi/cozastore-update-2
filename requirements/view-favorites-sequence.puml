@@ -1,0 +1,19 @@
+@startuml View Favorites - Sequence Diagram
+
+actor Customer
+participant "FavoriteController" as FavCtrl
+participant "Favorite" as Favorite
+participant "Product" as Product
+participant "View" as View
+
+== View Favorites Page ==
+Customer -> FavCtrl: index()
+FavCtrl -> FavCtrl: checkAuthentication()
+FavCtrl -> Favorite: where(user_id)->with('product')->get()
+Favorite --> FavCtrl: favorites
+FavCtrl -> Product: checkAvailability()
+Product --> FavCtrl: availability_status
+FavCtrl -> View: show favorites.index(favorites)
+View --> Customer: display favorites list
+
+@enduml

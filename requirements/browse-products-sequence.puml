@@ -1,0 +1,27 @@
+@startuml Browse Products - Sequence Diagram
+
+actor User
+participant "ProductController" as ProductCtrl
+participant "Product" as Product
+participant "Category" as Category
+participant "View" as View
+
+== Browse Products ==
+User -> ProductCtrl: index(request)
+ProductCtrl -> Product: where(is_active, true)
+
+alt Has category filter
+    ProductCtrl -> Product: where(category_id)
+end
+
+alt Has sort
+    ProductCtrl -> Product: orderBy(price)
+end
+
+Product --> ProductCtrl: products
+ProductCtrl -> Category: all()
+Category --> ProductCtrl: categories
+ProductCtrl -> View: show products.index(products, categories)
+View --> User: display products list
+
+@enduml
